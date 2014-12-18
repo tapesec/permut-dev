@@ -1,0 +1,11 @@
+<div class="modal-header">
+	<h4 class="modal-title" id="myLargeModelLabel">{{infos.login}}, {{infos.service}} à {{infos.residence}}</h4>
+</div><!-- modal-header -->
+<div class="modal-body">
+<h4>Description du poste:</h4>
+<p>{{infos.description}}</p>
+<p>Date entrée dans l'administration : {{infos.dateAdmin | date :'EEE dd MMMM yyyy'}}<br>Date Date obtention du grade : {{infos.dateGrade | date :'EEE dd MMMM yyyy'}}</p>
+</div><!-- fin modal body -->
+<div class="modal-footer">
+	<button type="button" class="btn btn-default" ng-click="close()">Fermer</button>
+</div><!-- modal-footer -->

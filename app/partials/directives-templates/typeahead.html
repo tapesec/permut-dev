@@ -1,0 +1,7 @@
+<div class="form-group">
+	<label ng-if="label">{{label}}</label>
+	<input class="{{style}}" type="text" name="inputname" placeholder="{{prompt}}" ng-model="item" autocomplete="off">
+	<ul class="list-group typeahead">
+		<li class="list-group-item" ng-click="selected(v)" ng-repeat="v in listeVilles">{{v.ville}} ({{v.cp}})</li>
+	</ul>
+</div>

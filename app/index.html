@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" ng-app="myApp" class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Bienvenue chez Père Mut'</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" href="img/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="img/favicon.ico" />
+  <link rel="stylesheet" type="text/css" href="foo/font-awesome-4.2.0/css/font-awesome.css">
+  <link rel="stylesheet" href="bower_components/html5-boilerplate/css/normalize.css">
+  <link rel="stylesheet" href="bower_components/html5-boilerplate/css/main.css">
+  <link rel="stylesheet" href="css/humane-js-master/themes/flatty.css">
+  <link rel="stylesheet" href="css/flatly.css">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="css/app.css"/>
+  <script src="bower_components/html5-boilerplate/js/vendor/modernizr-2.6.2.min.js"></script>
+  <!--<script src="bower_components/angular-strap/dist/angular-strap.min.js"></script>
+  <script src="bower_components/angular-strap/dist/angular-strap.tpl.min.js"></script>-->
+</head>
+<body>
+  <!-- Animation de chargement -->
+  <div ng-controller="LoaderCtrl">
+    <div class="bg-loader" ng-if="loader">
+      <div class="bubblingG">
+        <h2 class="title">Chargement</h2>
+        <span id="bubblingG_1"></span>
+        <span id="bubblingG_2"></span>
+        <span id="bubblingG_3"></span>
+      </div>
+    </div>
+  </div>
+  <!-- Fin animation -->
+  <!-- Navigation horizontale -->
+  <nav class="navbar navbar-default navbar-static-top title-main-nav" role="navigation" ng-controller="NavBarCtrl">
+    <div class="logo-permut" ng-click="goHome()"></div>
+      <div class="navbar-header navbar-decal">
+        <a class="navbar-brand logo-title" href="#/index">
+          Père Mut'
+        </a>
+      </div>
+      <div class="container-fluid">
+        <ul class="nav navbar-nav">
+          <li><a>{{nbUser}} permutants potentiels vous attendent !</a></li>
+          <li ng-if="rechercheAuto"><a href="#/index">Recherche automatique</a></li>
+          <li ng-if="rechercheMan"><a href="#/manuel">Recherche manuelle</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li ng-if="connexion"><a href="#/login">Connexion</a></li>
+          <li ng-if="profil"><a href="#/edition-profil"><span class="glyphicon glyphicon-user"></span> Mon profil</a></li>
+          <li ng-if="deconnexion" class="cursor"><a ng-click="logout()"><span title="déconnexion" class="glyphicon glyphicon-off"></a></li>
+        </ul>
+      </div>
+  </nav>
+  <!-- Fin navigation -->
+
+  
+
+  <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+  <![endif]-->
+  <div ng-controller="AppCtrl" style="height:100%;" class="no-marge">
+    <div class="container-fluid" style="height:100%;" ng-view >
+      
+    </div>
+  </div>
+  
+
+  <!-- In production use:
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+  -->
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <script src="lib/angular-file-upload.js"></script>
+  <script src="js/application.js"></script>
+  <script src="js/services.js"></script>
+  <script src="js/controllers.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/directives.js"></script>
+  <script src="lib/webstorage.js"></script>
+  <script src="css/humane-js-master/humane.min.js"></script>
+
+  <!--[if lt IE 9]><script type="text/javascript" src="lib/flashcanvas.js"></script><![endif]-->
+
+</body>
+</html>

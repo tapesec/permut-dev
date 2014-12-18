@@ -1,0 +1,49 @@
+<div class="row no-marge bg-index">
+	<div class="col-lg-6 col-lg-offset-2 block-annonce">
+		<h1>Le père Mut' vous souhaite la bienvenue !</h1>
+		<h2>Votre permutation n'est qu'à un click..</h2>
+	</div>	
+	
+	<div class="col-lg-3">
+		<div class="well bs-component">
+			<form name="form:login" ng-submit="connexion()" role="form">
+				<fieldset>
+					<div class="form-group">
+						<input class="form-control input-sm" type="text" name="login:login" ng-model="login.login" placeholder="Login">
+					</div>
+					<div class="form-group">
+						<input class="form-control input-sm" type="password" name="login:password" ng-model="login.password" placeholder="Mot de passe">
+					</div>
+					<small><a href="#/forget-password">Mot de passe oublié ?</a></small>
+					<button type="submit" class="btn btn-sm btn-block btn-success">Connexion</button>
+				</fieldset>
+			</form>
+		</div>
+		<div class="well bs-component">
+			<form name="form:sign" ng-submit="register()" role="form">
+				<fieldset>
+					<legend>Nouveau sur Permut.com ? <small>inscrivez vous</small></legend>
+					<div class="form-group">
+					<input class="form-control input-sm" type="text" name="sign:login" ng-model="sign.login" placeholder="Login (Pas de nom de famille)">
+					</div>
+					<div class="form-group">
+					<input class="form-control input-sm" type="text" name="sign:email" ng-model="sign.email" placeholder="Adresse email" title="Evitez les émails contenant votre nom">
+					</div>
+					<div class="form-group">
+					<input class="form-control input-sm" type="password" name="sign:password" ng-model="sign.password" placeholder="Mot de passe">
+					</div>
+					<div class="form-group">
+					<input class="form-control input-sm" type="password" name="sign:password2" ng-model="confirm.password" placeholder="Confirmer">
+					</div>
+					<div class="form-group">
+					<label>Combien font ({{captcha.op1}} multiplié par {{captcha.op2}}) plus quatre ? </label>
+					<input class="form-control input-sm" type="text" name="captcha:inputResult" ng-model="captcha.inputResult" ng-change="
+					captchaObserver(captcha.inputResult)" placeholder="Résultat">
+					</div>
+					<button class="btn btn-block btn-sm btn-warning" ng-disabled="captcha.disabled">Inscription</button>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+	<!--<button ng-click="saveVille()">Sauvegarder les villes</button>-->
+</div>

@@ -1,0 +1,41 @@
+<div class="no-marge bg-man-search">
+	<div class="row-fluid">
+		<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 well bs-component">
+				<form class="form-inline">
+					<div class="form-group col-lg-8">
+							<select class="form-control" ng-model="type">
+								<option disabled selected value="pasDeCritere">Recherche d'un permutant par ..</option>
+								<option value="residence">Lieu de résidence</option>
+								<option value="destination">Choix de destination</option>
+								<option value="grade">Grade</option>
+							</select>
+					</div>
+					<div class="form-group col-lg-4">					
+						<input ng-change="search(type, val)" disabled="true" multiple-type select="type" class="form-control" type="text" ng-model="val" placeholder="Tapez votre recherche ici">
+					</div>			
+				</form>
+		</div>
+	</div>
+	<div class="row-fluid">
+		<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 bs-component">
+			<span ng-if="!users">Selectionnez dans le menu déroulant de gauche un critère de recherche..</span>
+			<div class="panel panel-success" ng-repeat="user in users">
+				<div class="panel-heading">{{user.name}} ({{user.grade}}) - <span class="label label-warning">{{user.residence}}</span> - {{user.service}}<div class="pull-right"><span class="glyphicon glyphicon-envelope"></span> {{user.email}}</div></div>
+				<div class="panel-body">
+					<p><em>Souhaite 
+					<span class="label label-primary">{{user.destination.choix1}}</span>
+					<span ng-if="user.destination.choix2"> - 
+					<span class="label label-primary">{{user.destination.choix2}}</span>
+					</span>
+					<span ng-if="user.destination.choix3"> - 
+					<span class="label label-primary">{{user.destination.choix3}}</span>
+					</span>
+					</em></p>
+					{{user.description}}
+				</div>
+			</div>
+			
+		</div>
+
+	</div>
+</div>
