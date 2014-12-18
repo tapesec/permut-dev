@@ -1,1 +1,1 @@
-This project is an app made with Angular, Express/Node and MongoDb. The goal is to allow french policeman to switch their assignments.
+This project is an app made with Angular, Express/Node and MongoDb. The goal is to allow french policemen to permute their assignments.

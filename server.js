@@ -31,6 +31,7 @@ var Q = require('q');
 var favicon = require('serve-favicon');
 var path = require('path');
 var multer  = require('multer');
+var mkdirp = require('mkdirp');
 
 var transporter = nodemailer.createTransport({
 	service: 'Gmail',
@@ -64,6 +65,7 @@ app.use('/foo', express.static(__dirname + '/app/font'));
 app.use('/data', express.static(__dirname + '/data'));
 app.use('/bower_components', express.static(__dirname + '/app/bower_components'));
 app.use('/images', express.static(__dirname + '/app/img'));
+app.use('/avatars', express.static(__dirname + '/avatars'));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(multer({ dest: './uploads/'}))
@@ -304,10 +306,19 @@ app.post('/addUser', function(req, res){
 **/
 app.post('/avatar', function(req, res){
 	console.log(req.files);
-
-
-	
-	res.send('file uploaded');
+	console.log(new Date());
+	mkdirp(__dirname + '/avatars', function(error) {
+		fs.rename(__dirname + '/' + req.files.file.path, __dirname + '/avatars/'+req.files.file.originalname, function() {
+			var query = Permutant.findOneAndUpdate({_id: req.session.userAuthenticated._id}, {avatar: '/avatars/'+req.files.file.originalname});
+			query.exec(function(error, user) {
+				if(error) {
+					res.status(500).send();
+				} else {
+					res.status(200).send(user);
+				} 
+			})
+		});
+	});
 });
 
 
@@ -596,7 +607,8 @@ var permutantlvl3 = [];
 							service: client.service,
 							description: client.description,
 							dateAdmin: client.dateAdmin,
-							dateGrade: client.dateGrade
+							dateGrade: client.dateGrade,
+							avatar: client.avatar
 						},
 
 						pos2: {
@@ -607,7 +619,8 @@ var permutantlvl3 = [];
 							service: users[user].service,
 							description: users[user].description,
 							dateAdmin: users[user].dateAdmin,
-							dateGrade: users[user].dateGrade
+							dateGrade: users[user].dateGrade,
+							avatar: users[user].avatar
 						}
 					});
 				} else {
@@ -673,7 +686,8 @@ var permutantlvl3 = [];
 								service: permutantlvl2[perm].service,
 								description: permutantlvl2[perm].description,
 								dateAdmin: permutantlvl2[perm].dateAdmin,
-								dateGrade: permutantlvl2[perm].dateGrade
+								dateGrade: permutantlvl2[perm].dateGrade,
+								avatar: permutantlvl2[perm].avatar
 							})
 						}
 					}
@@ -686,7 +700,8 @@ var permutantlvl3 = [];
 							service: client.service,
 							description: client.description,
 							dateAdmin: client.dateAdmin,
-							dateGrade: client.dateGrade
+							dateGrade: client.dateGrade,
+							avatar: client.avatar
 						},
 						pos2 : multiplepos2,
 						pos3: {
@@ -697,7 +712,8 @@ var permutantlvl3 = [];
 							service: users[user].service,
 							description: users[user].description,
 							dateAdmin: users[user].dateAdmin,
-							dateGrade: users[user].dateGrade
+							dateGrade: users[user].dateGrade,
+							avatar: users[user].avatar
 						},
 						pos4: {
 							login : "Vous",
@@ -707,7 +723,8 @@ var permutantlvl3 = [];
 							service: client.service,
 							description: client.description,
 							dateAdmin: client.dateAdmin,
-							dateGrade: client.dateGrade
+							dateGrade: client.dateGrade,
+							avatar: client.avatar
 						}
 					});
 
@@ -784,7 +801,8 @@ var permutantlvl3 = [];
 										service: permutantlvl2[pperm].service,
 										description: permutantlvl2[pperm].description,
 										dateAdmin: permutantlvl2[pperm].dateAdmin,
-										dateGrade: permutantlvl2[pperm].dateGrade
+										dateGrade: permutantlvl2[pperm].dateGrade,
+										avatar: permutantlvl2[perm].avatar
 									});
 								}
 							}
@@ -796,7 +814,8 @@ var permutantlvl3 = [];
 								service: permutantlvl3[pperm].service,
 								description: permutantlvl3[pperm].description,
 								dateAdmin: permutantlvl3[pperm].dateAdmin,
-								dateGrade: permutantlvl3[pperm].dateGrade
+								dateGrade: permutantlvl3[pperm].dateGrade,
+								avatar: permutantlvl3[perm].avatar
 							});
 						} // endif
 					}
@@ -809,7 +828,8 @@ var permutantlvl3 = [];
 							service: client.service,
 							description: client.description,
 							dateAdmin: client.dateAdmin,
-							dateGrade: client.dateGrade
+							dateGrade: client.dateGrade,
+							avatar: client.avatar
 						},
 						pos2: multiplepos2,
 						pos3: multiplepos3,
@@ -821,7 +841,8 @@ var permutantlvl3 = [];
 							service: users[user].service,
 							description: users[user].description,
 							dateAdmin: users[user].dateAdmin,
-							dateGrade: users[user].dateGrade
+							dateGrade: users[user].dateGrade,
+							avatar: users[user].avatar
 						},
 						pos5: {
 							login : client.name,
@@ -831,7 +852,8 @@ var permutantlvl3 = [];
 							service: client.service,
 							description: client.description,
 							dateAdmin: client.dateAdmin,
-							dateGrade: client.dateGrade
+							dateGrade: client.dateGrade,
+							avatar: client.avatar
 						}
 					}); // endfor
 				} // endif
