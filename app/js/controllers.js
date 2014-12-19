@@ -187,8 +187,8 @@ PermutantCtrl.controller('RegisterCtrl', ['$scope','User','$http','Mail', functi
  
 }]);
 
-PermutantCtrl.controller('EditionCtrl', ['$scope', 'User', '$filter','Ville', 'FileUploader', 
-	function($scope, User, $filter, Ville, FileUploader){
+PermutantCtrl.controller('EditionCtrl', ['$scope', 'User', '$filter','Ville', 'FileUploader', '$modal',
+	function($scope, User, $filter, Ville, FileUploader, $modal){
 	
 	$scope.profil = User.showProfil();
 
@@ -226,9 +226,30 @@ PermutantCtrl.controller('EditionCtrl', ['$scope', 'User', '$filter','Ville', 'F
 			});
 	}
 
+	/*$scope.open = function (infos) {
+
+	    var modalInstance = $modal.open({
+		    templateUrl: 'partials/popups/uploader.html',
+		    controller: UploaderCtrl,
+		    resolve: {
+		      	infos: function(){
+		      		return infos;
+		      	}
+		    }
+	    });
+	};*/
+
 	$scope.sendAvatar = function() {
 		console.log(uploader);
 		uploader.uploadAll();
 	}
 
 }]);
+
+PermutantCtrl.controller('DetailPosteCtrl', function($scope, $modalInstance, infos) {
+
+  	$scope.infos = infos;
+  	$scope.close = function(){
+  		$modalInstance.close();
+  	}
+});

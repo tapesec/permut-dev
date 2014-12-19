@@ -14,30 +14,95 @@ PermutantDirectives.directive('appVersion', ['version',
     	};
   	}]);
 
-PermutantDirectives.directive('uploadForm', function() {
+PermutantDirectives.directive('uploadForm', function($modal, $http) {
 	return {
 		restrict: 'A',
 		link: function(scope, elem, attrs, ctrl) {
-			console.log(elem[0]);
 			$(elem[0]).change(function(){
-				//preview ici
-			});
-			var that = elem[0];
-			$(elem[0]).next().click(function(){
-				var xhr = new XMLHttpRequest();
-    			xhr.open('POST', '/avatar');
-			    xhr.addEventListener('load', function() {
-			        alert('Upload terminé !');
-			    }, false);
+				console.log(elem[0].files[0]);
+				$modal.open({
 
-			    var form = new FormData();
-				form.append('file', that.files[0]);
-				xhr.send(form);
+				    templateUrl: 'partials/popups/uploader.html',
+
+				    controller: function($scope, $modalInstance) {
+
+				    	$scope.file = elem[0].files[0];
+
+						$scope.createThumbnail = function(file) {
+						    var reader = new FileReader();
+						    reader.addEventListener('load', function() {
+						    	var btn = document.getElementById('btn-rotate');
+						    	var positionImage = {
+						    		angle: 0,
+						    		revolution: 0 };
+
+								btn.addEventListener('click', function(e) {
+									console.log(e.offsetX+ ' px (x) et ' + e.offsetY+ ' px (y)');
+									if(positionImage.revolution <= 4){
+										positionImage.angle += 90;
+										positionImage.revolution++;
+									}else{
+										positionImage.angle = 0;
+										positionImage.revolution = 0;
+									}
+									$('#avatar-to-resize').css('rotate', positionImage.angle);
+									$('#avatar-to-resize').animate({rotate: ''+positionImage.angle}, 0);
+								});
+
+						        var prev = document.getElementById('img-prev');
+							    var imgElement = document.createElement('img');
+							    imgElement.id = "avatar-to-resize";
+							    imgElement.style.maxWidth = '400px';
+							    imgElement.style.maxHeight = '400px';
+							    imgElement.src = this.result;
+							    prev.appendChild(imgElement);
+							    $("#uploaderModal").css('min-height', '450px');
+						        
+						    }, false); 
+						    reader.readAsDataURL(file);
+						}
+
+						$scope.createThumbnail($scope.file);
+
+						$scope.send = function() {
+							var form = new FormData();
+							form.append('file', $scope.file);
+
+							$http.post('/avatar', form, {
+								headers: {'Content-Type': undefined},
+								transformRequest: angular.identity
+							})
+							.success(function(response) {
+							    alert('Upload terminé !'+ response);
+							});
+						}
+
+						$scope.close = function() {
+							$modalInstance.close();
+						}
+					}
+	    		});
 			});
-		}
+		} 
 	}
 
 });
+
+
+PermutantDirectives.directive('cropMyFace', function () {
+	return {
+		restrict: 'A',
+		link: function (scope, iElement, iAttrs) {
+			var img;
+			$(iElement).on('click', function(event) {
+
+				console.log($(event.target).offset().left + "x " + $(event.target).offset().top + " y");
+				img = $(this).children().get(0);
+				console.log($(img).offset().left + " px " + $(img).offset().top + " px");
+			});
+		}
+	};
+})
 
 /*Typeahead*/
 PermutantDirectives.directive('autofill', function(){

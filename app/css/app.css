@@ -48,6 +48,10 @@ body {
   background-attachment: fixed;
 
 }
+
+#img-prev {
+  margin: 60px;
+}
 .cursor{
     cursor: pointer;
 }
