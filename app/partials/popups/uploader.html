@@ -1,13 +1,16 @@
 <div class="modal-header">
-	<h2 class="modal-title" id="myLargeModelLabel">Recadrez votre avatar et réorientez le si besoin</h2>
+	<h2 class="modal-title" id="myLargeModelLabel">Recadrez votre avatar</h2>
 </div><!-- modal-header -->
 <div class="modal-body" id="uploaderModal">
-	<div class="text-center" id="img-prev" crop-my-face></div>
-	<div>
-	</div>
+	<image-crop data-width="200" data-height="200" data-shape="square" data-step="imageCropStep" data-result="imageCropResult" ng-show="showImageCropper"></image-crop>
+	<h3>Resultat</h3>
+    <div ng-show="imageCropResult"> <img ng-src="{{ imageCropResult }}" alt="The Cropped Image">
+    	<textarea class="result-datauri">{{ imageCropResult }}</textarea>
+    </div>
+    <p ng-hide="imageCropResult">Pas encore découpé</p>
+
 </div><!-- fin modal body -->
 <div class="modal-footer">
-	<button type="button" class="pull-left btn btn-info btn" id="btn-rotate"><span class="glyphicon glyphicon-repeat"></span></button>
 	<button type="button" class="btn btn-info" ng-click="send()">Uploader !</button>
 	<button type="button" class="btn btn-info" ng-click="close()">Fermer</button>
 </div><!-- modal-footer -->

@@ -187,20 +187,16 @@ PermutantCtrl.controller('RegisterCtrl', ['$scope','User','$http','Mail', functi
  
 }]);
 
-PermutantCtrl.controller('EditionCtrl', ['$scope', 'User', '$filter','Ville', 'FileUploader', '$modal',
-	function($scope, User, $filter, Ville, FileUploader, $modal){
+PermutantCtrl.controller('EditionCtrl', ['$scope', '$rootScope', 'User', '$filter','Ville', '$modal', '$http',
+	function($scope, $rootScope, User, $filter, Ville, $modal, $http){
 	
 	$scope.profil = User.showProfil();
-
+	
 	$scope.listGrade = 'Gardien de la Paix, Brigadier, Brigadier Chef, Major, Lieutenant, Capitaine, Commandant'.split(',');
 
 	//affichage / masquage des datepickers
 	$scope.open = false;
 	$scope.open2 = false;
-
-	var uploader = $scope.uploader = new FileUploader({
-			url: '/avatar'
-		});
 
 	$scope.update = function(){
 		if(!$scope.formProfil.$invalid) {
@@ -226,23 +222,34 @@ PermutantCtrl.controller('EditionCtrl', ['$scope', 'User', '$filter','Ville', 'F
 			});
 	}
 
-	/*$scope.open = function (infos) {
+	$scope.uploadAvatar = function() {
 
-	    var modalInstance = $modal.open({
-		    templateUrl: 'partials/popups/uploader.html',
-		    controller: UploaderCtrl,
-		    resolve: {
-		      	infos: function(){
-		      		return infos;
-		      	}
-		    }
-	    });
-	};*/
+		var modalInstance = $modal.open({
 
-	$scope.sendAvatar = function() {
-		console.log(uploader);
-		uploader.uploadAll();
+			templateUrl: 'partials/popups/uploader.html',
+			controller: function($scope, $modalInstance) {
+				/*$scope.imageCropResult = null;
+				$scope.showImageCropper = false;
+				*/
+				$scope.send = function() {
+					var datauri = $(".result-datauri").val();
+					$modalInstance.close(datauri);
+				}
+
+				$scope.close = function() {
+					$modalInstance.close();
+				}
+			}
+
+	   	});
+
+	   	modalInstance.result.then(function (data) {
+      		User.sendAvatar(data).then(function(result) {
+				$scope.profil = User.showProfil();
+			});	
+    	});
 	}
+
 
 }]);
 

@@ -66,7 +66,7 @@ app.use('/data', express.static(__dirname + '/data'));
 app.use('/bower_components', express.static(__dirname + '/app/bower_components'));
 app.use('/images', express.static(__dirname + '/app/img'));
 app.use('/avatars', express.static(__dirname + '/avatars'));
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(cookieParser());
 app.use(multer({ dest: './uploads/'}))
 
@@ -305,16 +305,24 @@ app.post('/addUser', function(req, res){
 *
 **/
 app.post('/avatar', function(req, res){
-	console.log(req.files);
-	console.log(new Date());
-	mkdirp(__dirname + '/avatars', function(error) {
-		fs.rename(__dirname + '/' + req.files.file.path, __dirname + '/avatars/'+req.files.file.originalname, function() {
-			var query = Permutant.findOneAndUpdate({_id: req.session.userAuthenticated._id}, {avatar: '/avatars/'+req.files.file.originalname});
+	
+	var imgData = req.body.img,
+	base64Data = imgData.replace(/^data:image\/png;base64,/,""),
+  	binaryData = new Buffer(base64Data, 'base64').toString('binary'); 
+	var login = req.session.userAuthenticated.name;
+	var folder = login.substr(0,1);
+	var rand = Math.floor((Math.random() * 1000) + 1);
+	
+	mkdirp(__dirname + '/avatars/'+ folder, function(error) {
+		fs.writeFile(__dirname +"/avatars/"+folder+"/"+login+rand+".png", binaryData, "binary", function(err) {
+	  		console.log(err); // writes out file without error, but it's not a valid image
+	  		var query = Permutant.findOneAndUpdate({_id: req.session.userAuthenticated._id}, {avatar: '/avatars/'+folder+'/'+login+rand+'.png'});
 			query.exec(function(error, user) {
 				if(error) {
 					res.status(500).send();
 				} else {
-					res.status(200).send(user);
+					var data = beforeRender(user);
+					res.status(200).send({code: "response:avatar-uploaded" , content : data});
 				} 
 			})
 		});

@@ -107,8 +107,11 @@ PermutantServices.factory('User',['$http', '$location', 'localStorageService','$
 					$location.path('/login');
 				});
 		},
-		sendAvatar: function() {
-			//$http.post('/avatar', this.get('UserSession'));
+		sendAvatar: function(postdata) {
+			return $http.post('/avatar', {img: postdata})
+				.success(function(response) {
+					return LocalStorageService.set('UserSession', response.content);
+			});
 			
 		},
 		get: function(key){
@@ -246,6 +249,9 @@ PermutantServices.factory('ResponseInterpreter', ['$location', 'localStorageServ
 					break;
 				case "response:update-user-success":
 					humane.log(this.iconeInfo+ 'Profil bien mis à jour', { timeout: 3000, clickToClose: true, addnCls: this.class[2] });
+					break;
+				case "response:avatar-uploaded":
+					humane.log(this.iconeInfo+ 'Avatar bien sauvegardé !', { timeout: 3000, clickToClose: true, addnCls: this.class[2] });
 					break;
 				case "response:password-send":
 					humane.log(this.iconeInfo+ 'Un mail de vérification vous a été envoyé', { timeout: 3000, clickToClose: true, addnCls: this.class[0] });
