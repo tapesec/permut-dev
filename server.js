@@ -616,6 +616,7 @@ var permutantlvl3 = [];
 							description: client.description,
 							dateAdmin: client.dateAdmin,
 							dateGrade: client.dateGrade,
+							grade: client.grade,
 							avatar: client.avatar
 						},
 
@@ -628,7 +629,8 @@ var permutantlvl3 = [];
 							description: users[user].description,
 							dateAdmin: users[user].dateAdmin,
 							dateGrade: users[user].dateGrade,
-							avatar: users[user].avatar
+							avatar: users[user].avatar,
+							grade: users[user].grade
 						}
 					});
 				} else {
@@ -695,7 +697,8 @@ var permutantlvl3 = [];
 								description: permutantlvl2[perm].description,
 								dateAdmin: permutantlvl2[perm].dateAdmin,
 								dateGrade: permutantlvl2[perm].dateGrade,
-								avatar: permutantlvl2[perm].avatar
+								avatar: permutantlvl2[perm].avatar,
+								grade: permutantlvl2[perm].grade
 							})
 						}
 					}
@@ -709,7 +712,8 @@ var permutantlvl3 = [];
 							description: client.description,
 							dateAdmin: client.dateAdmin,
 							dateGrade: client.dateGrade,
-							avatar: client.avatar
+							avatar: client.avatar,
+							grade: client.grade
 						},
 						pos2 : multiplepos2,
 						pos3: {
@@ -721,7 +725,8 @@ var permutantlvl3 = [];
 							description: users[user].description,
 							dateAdmin: users[user].dateAdmin,
 							dateGrade: users[user].dateGrade,
-							avatar: users[user].avatar
+							avatar: users[user].avatar,
+							grade: users[user].grade
 						},
 						pos4: {
 							login : "Vous",
@@ -732,7 +737,8 @@ var permutantlvl3 = [];
 							description: client.description,
 							dateAdmin: client.dateAdmin,
 							dateGrade: client.dateGrade,
-							avatar: client.avatar
+							avatar: client.avatar,
+							grade: client.grade
 						}
 					});
 
@@ -810,7 +816,8 @@ var permutantlvl3 = [];
 										description: permutantlvl2[pperm].description,
 										dateAdmin: permutantlvl2[pperm].dateAdmin,
 										dateGrade: permutantlvl2[pperm].dateGrade,
-										avatar: permutantlvl2[perm].avatar
+										avatar: permutantlvl2[perm].avatar,
+										grade: permutantlvl2[perm].grade
 									});
 								}
 							}
@@ -823,7 +830,8 @@ var permutantlvl3 = [];
 								description: permutantlvl3[pperm].description,
 								dateAdmin: permutantlvl3[pperm].dateAdmin,
 								dateGrade: permutantlvl3[pperm].dateGrade,
-								avatar: permutantlvl3[perm].avatar
+								avatar: permutantlvl3[perm].avatar,
+								grade: permutantlvl3[perm].grade
 							});
 						} // endif
 					}
@@ -837,7 +845,8 @@ var permutantlvl3 = [];
 							description: client.description,
 							dateAdmin: client.dateAdmin,
 							dateGrade: client.dateGrade,
-							avatar: client.avatar
+							avatar: client.avatar,
+							grade: client.grade
 						},
 						pos2: multiplepos2,
 						pos3: multiplepos3,
@@ -850,7 +859,8 @@ var permutantlvl3 = [];
 							description: users[user].description,
 							dateAdmin: users[user].dateAdmin,
 							dateGrade: users[user].dateGrade,
-							avatar: users[user].avatar
+							avatar: users[user].avatar,
+							grade: users[user].grade
 						},
 						pos5: {
 							login : client.name,
@@ -861,7 +871,8 @@ var permutantlvl3 = [];
 							description: client.description,
 							dateAdmin: client.dateAdmin,
 							dateGrade: client.dateGrade,
-							avatar: client.avatar
+							avatar: client.avatar,
+							grade: client.grade
 						}
 					}); // endfor
 				} // endif

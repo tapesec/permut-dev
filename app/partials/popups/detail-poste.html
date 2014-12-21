@@ -1,10 +1,24 @@
 <div class="modal-header">
-	<h4 class="modal-title" id="myLargeModelLabel">{{infos.login}}, {{infos.service}} à {{infos.residence}}</h4>
+	<h4 class="modal-title" id="myLargeModelLabel">A propos de {{infos.login}} joignable à <span class="label label-info">{{infos.mail}}</span></h4>
 </div><!-- modal-header -->
 <div class="modal-body">
-<h4>Description du poste:</h4>
-<p>{{infos.description}}</p>
-<p>Date entrée dans l'administration : {{infos.dateAdmin | date :'EEE dd MMMM yyyy'}}<br>Date Date obtention du grade : {{infos.dateGrade | date :'EEE dd MMMM yyyy'}}</p>
+
+	<div class="row">
+		<div class="col-lg-4 col-lg-offset-4">
+			<img class="text-center img-circle img-responsive" ng-src="{{infos.avatar}}"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-10 col-lg-offset-1">
+			<p>Travaille à {{infos.service}} à <span class="label label-info">{{infos.residence}}</span></p>
+			<p><strong>Description:</strong></p>
+			<p>{{infos.description}}</p>
+			<p><em>Entrée dans l'administration le {{infos.dateAdmin | date :'EEE dd MMMM yyyy'}}<br>{{infos.grade}} depuis le {{infos.dateGrade | date :'EEE dd MMMM yyyy'}}</em></p>
+			<p><strong>Souhaite aller à :</strong></p>
+			<p><span class="label label-info">{{infos.destination.choix1}} {{infos.destination.choix2}} {{infos.destination.choix3}}</span></p>
+		</div>
+
+	</div>
 </div><!-- fin modal body -->
 <div class="modal-footer">
 	<button type="button" class="btn btn-default" ng-click="close()">Fermer</button>

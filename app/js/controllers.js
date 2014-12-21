@@ -23,6 +23,15 @@ PermutantCtrl.controller('IndexCtrl', ['$rootScope', '$scope', 'User','Permutati
 		      	}
 		    }
 	    });
+
+	    function DetailPosteCtrl($scope, $modalInstance, infos) {
+	    	
+	    	$scope.infos = infos;
+	    	console.log(infos);
+	    	$scope.close = function(){
+  				$modalInstance.close();
+  			}
+	    }
 	};
 
   	/*
@@ -47,14 +56,6 @@ PermutantCtrl.controller('IndexCtrl', ['$rootScope', '$scope', 'User','Permutati
 
 
 }]);
-
-PermutantCtrl.controller('DetailPosteCtrl', function($scope, $modalInstance, infos) {
-
-  	$scope.infos = infos;
-  	$scope.close = function(){
-  		$modalInstance.close();
-  	}
-});
 
 
 PermutantCtrl.controller('ManualCtrl', ['$scope', 'User', function($scope, User) {
