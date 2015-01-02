@@ -16,6 +16,10 @@ body {
   height: 100%;
   background-color: #f5f5f5;
 }
+
+.navbar-fixed-adjust {
+  margin-top: 80px;
+}
 #bg {
   margin-top: -21px;
   height: 100%;
@@ -40,6 +44,7 @@ body {
 .bg-man-search {
   background-image: url('../img/rechercher.svg');
   background-size: 15%;
+  background-attachment: fixed;
 }
 
 .bg-edition {
@@ -86,9 +91,14 @@ div.liaison {
   margin:auto;
 }
 
+#croparea {
+  visibility: hidden;
+}
+
 @font-face {
   font-family: 'Foo';
-  src: url('../foo/foo.ttf') format('truetype');
+  src: url('../foo/foo.ttf') format('truetype'), 
+       url('../foo/foo.eot') format('embedded-opentype');
 }
 
 .block-annonce h1, h2 {

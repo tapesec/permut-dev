@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="en" ng-app="myApp" class="no-js"> <!--<![endif]-->
+<!--[if lt IE 10]>         <html lang="fr" ng-app="myApp" class="no-js lt-ie10"> <![endif]-->
+<!--[if gte IE 10]><!--> <html lang="fr" ng-app="myApp" class="no-js"> <!--<![endif]-->
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -26,6 +24,18 @@
   <script src="bower_components/angular-strap/dist/angular-strap.tpl.min.js"></script>-->
 </head>
 <body>
+<!--[if lt IE 10]>
+      <div class="container>
+        <div class="row">
+          <div class="col-lg-8 col-lg-offset-2" style="margin-top:40px;">
+            <div class="alert alert-warning">
+              <p class="">Vous utilisez une version de navigateur <strong>trop ancienne</strong>. S'il vous plaît, <a href="http://browsehappy.com/">mettez à jour votre navigateur</a> pour rendre visite au père mut'. A tout de suite ;).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+  <![endif]-->
+<!--[if gte IE 10]><!-->
   <!-- Animation de chargement -->
   <div ng-controller="LoaderCtrl">
     <div class="bg-loader" ng-if="loader">
@@ -39,7 +49,7 @@
   </div>
   <!-- Fin animation -->
   <!-- Navigation horizontale -->
-  <nav class="navbar navbar-default navbar-static-top title-main-nav" role="navigation" ng-controller="NavBarCtrl">
+  <nav class="navbar navbar-default navbar-static-top title-main-nav navbar-fixed-top" role="navigation" ng-controller="NavBarCtrl">
     <div class="logo-permut" ng-click="goHome()"></div>
       <div class="navbar-header navbar-decal">
         <a class="navbar-brand logo-title" href="#/index">
@@ -48,12 +58,13 @@
       </div>
       <div class="container-fluid">
         <ul class="nav navbar-nav">
-          <li><a>{{nbUser}} permutants potentiels vous attendent !</a></li>
-          <li ng-if="rechercheAuto"><a href="#/index">Recherche automatique</a></li>
-          <li ng-if="rechercheMan"><a href="#/manuel">Recherche manuelle</a></li>
+          <li><a><i class="fa fa-users"></i> {{nbUser}} permutants potentiels vous attendent !</a></li>
+          <li ng-if="rechercheAuto"><a href="#/index"><i class="fa fa-cogs"></i> Recherche automatique</a></li>
+          <li ng-if="rechercheMan"><a href="#/manuel"><span class="glyphicon glyphicon-wrench"></span> Recherche manuelle</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li ng-if="connexion"><a href="#/login">Connexion</a></li>
+          <li><a href="#/about"><span class="glyphicon glyphicon-question-sign"></span> A propos</a></li>
+          <li ng-if="connexion"><a href="#/login"><span class="glyphicon glyphicon-log-in"></span> Connexion</a></li>
           <li ng-if="profil"><a href="#/edition-profil"><span class="glyphicon glyphicon-user"></span> Mon profil</a></li>
           <li ng-if="deconnexion" class="cursor"><a ng-click="logout()"><span title="déconnexion" class="glyphicon glyphicon-off"></a></li>
         </ul>
@@ -61,13 +72,8 @@
   </nav>
   <!-- Fin navigation -->
 
-  
-
-  <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-  <![endif]-->
   <div ng-controller="AppCtrl" style="height:100%;" class="no-marge">
-    <div class="container-fluid" style="height:100%;" ng-view >
+    <div class="container-fluid navbar-fixed-adjust" style="height:100%;" ng-view >
       
     </div>
   </div>
@@ -77,6 +83,7 @@
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
   -->
   <script src="bower_components/angular/angular.js"></script>
+  <script src="js/angular-i18n-fr.js"></script>
   <script src="bower_components/angular-route/angular-route.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="js/image-crop.js"></script>
@@ -89,6 +96,6 @@
   <script src="css/humane-js-master/humane.min.js"></script>
 
   <!--[if lt IE 9]><script type="text/javascript" src="lib/flashcanvas.js"></script><![endif]-->
-
+<!--<![endif]-->
 </body>
 </html>

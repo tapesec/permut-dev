@@ -45,8 +45,8 @@
 						</div>
 						<div class="form-group well">
 							<div class="media">
-								<a class="pull-left" href="#">
-									<img width="80" height="80" class="img-circle img-responsive" src="{{profil.avatar}}" alt="Image de l'avatar par défaut">
+								<a class="pull-left">
+									<img width="80" height="80" class="img-circle img-responsive" src="{{profil.avatar}}?{{avatar.randomparams}}" alt="Image de l'avatar par défaut">
 								</a>
 								<div class="media-body">
 									<h4 class="media-heading">Choisissez un avatar</h4>
@@ -57,7 +57,7 @@
 							</div>
 						</div>	
 						
-						<button type="button" class="btn btn-lg btn-warning btn-block"><span class="glyphicon glyphicon-info-sign"></span> A lire absolument</button>
+						<button type="button" ng-click="lire()" class="btn btn-lg btn-warning btn-block"><span class="glyphicon glyphicon-info-sign"></span> A lire absolument</button>
 					</div>
 					<div class="col-lg-6">
 						<div class="form-group">
@@ -73,10 +73,11 @@
 								<span class="glyphicon glyphicon-warning-sign"></span> Le grade doit être renseigné..
 							</small>
 						</div>
+
 						<div class="form-group">
 							<label>Date entrée dans l'administration (hors ADS ou PA) :</label>
 							<input class="form-control input-sm" type="text" name="profilDateEntree" ng-model="profil.dateEntree"
-							datepicker-popup="dd MMMM yyyy" is-open="open" ng-click="open = !open" placeholder="click pour ouvrir le calendrier" required autocomplete="off">
+							datepicker-popup="dd.MM.yyyy" is-open="open" ng-click="open = !open" placeholder="click pour ouvrir le calendrier" required autocomplete="off">
 							<small class="help-block"ng-show="formProfil.profilDateEntree.$error.required">
 								<span class="glyphicon glyphicon-warning-sign"></span> La date d'entrée dans l'administration doit être renseigné..
 							</small>
@@ -84,13 +85,13 @@
 						<div class="form-group">
 							<label>Date d'obtention du grade actuel (pour gpx date titu) :</label>
 							<input class="form-control input-sm" type="text" name="profilDateGrade" ng-model="profil.dateGrade"
-							datepicker-popup="dd MMMM yyyy" is-open="open2" ng-click="open2 = !open2" placeholder="click pour ouvrir le calendrier" required autocomplete="off">
+							datepicker-popup="dd.MM.yyyy" is-open="open2" ng-click="open2 = !open2" placeholder="click pour ouvrir le calendrier" required autocomplete="off">
 							<small class="help-block"ng-show="formProfil.profilDateGrade.$error.required">
 								<span class="glyphicon glyphicon-warning-sign"></span> La date d'obtention du grade doit être renseigné..
 							</small>
 						</div>
 					
-							<autofill auto-style="form-control input-sm" prompt="Tape les premieres lettres de la ville et selectionne dans le menu déroulant" label="Ville de résidence" name="profilVille" ng-model="profil.ville" listeville="liste" action="search(profil.ville)" required="true"></autofill>
+							<autofill auto-style="form-control input-sm" prompt="Tape les premieres lettres de la ville et selectionne dans le menu déroulant" label="Ville de résidence" name="profilVille" ng-model="profil.ville" pattern="^[ \w]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.ville)" required="true"></autofill>
 							<small class="help-block"ng-show="formProfil.profilVille.$error.required">
 								<span class="glyphicon glyphicon-warning-sign"></span> La ville de résidence doit être renseigné..
 							</small>
@@ -105,24 +106,25 @@
 						</div>
 						<div class="form-group">
 							<label>Descriptif bref du poste et de l'environement de travail (pas d'infos sensibles)</label>
-							<textarea class="form-control input-sm" name="profilDescription" ng-model="profil.presentation" placeholder='Exemple : "Régime cyclique 4/2 + 1 RC sup" ou "être disponible habilitation OPJ obligatoire" etc ...' required></textarea>
+							<textarea class="form-control input-sm" name="profilDescription" ng-model="profil.presentation" rows="5" placeholder='Exemple : "Régime cyclique 4/2 + 1 RC sup" ou "être disponible habilitation OPJ obligatoire" etc ...' required></textarea>
 							<small class="help-block"ng-show="formProfil.profilDescription.$error.required">
 								<span class="glyphicon glyphicon-warning-sign"></span> Aucune description n'a encore été donné..
 							</small>
 						</div>
 					</div>
-					<hr>
+				</fieldset>
+				<fieldset>
 					<legend>Choix de la permutation : <small>indiquez une ville</small></legend>
 					<div class="form-group">
 
-						<autofill auto-style="form-control" prompt="Choix N° 1 (obligatoire) : Tape les premieres lettres de la ville et selectionne dans le menu déroulant" label="Choix de permutation (par ville) 1 choix obligatoire les 2 autres facultatifs" name="profilChoix1" ng-model="profil.destination.choix1" listeville="liste" action="search(profil.destination.choix1)" required="true"></autofill>
+						<autofill auto-style="form-control" prompt="Choix N° 1 (obligatoire) : Tapez les premières lettres de la ville et selectionnez la dans le menu déroulant" label="Choix de permutation (par ville) 1 choix obligatoire les 2 autres facultatifs" name="profilChoix1" ng-model="profil.destination.choix1" pattern="^[ \w]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.destination.choix1)" required="true"></autofill>
 						<small class="help-block"ng-show="formProfil.profilChoix1.$error.required">
 							<span class="glyphicon glyphicon-warning-sign"></span> Renseigné au moins 1 choix de destination..
 						</small>
 						
-						<autofill auto-style="form-control" prompt="Choix N° 2 (facultatif) : Tape les premieres lettres de la ville et selectionne dans le menu déroulant" name="profilChoix2" ng-model="profil.destination.choix2" listeville="liste" action="search(profil.destination.choix2)"></autofill>
+						<autofill auto-style="form-control" prompt="Choix N° 2 (facultatif) : Tape les premieres lettres de la ville et selectionne dans le menu déroulant" name="profilChoix2" ng-model="profil.destination.choix2" pattern="^[ \w]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.destination.choix2)"></autofill>
 
-						<autofill auto-style="form-control" prompt="Choix N° 3 (facultatif) : Tape les premieres lettres de la ville et selectionne dans le menu déroulant" name="profilChoix3" ng-model="profil.destination.choix3" listeville="liste" action="search(profil.destination.choix3)"></autofill>
+						<autofill auto-style="form-control" prompt="Choix N° 3 (facultatif) : Tape les premieres lettres de la ville et selectionne dans le menu déroulant" name="profilChoix3" ng-model="profil.destination.choix3" pattern="^[ \w]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.destination.choix3)"></autofill>
 
 					</div>
 					<div class="form-group">

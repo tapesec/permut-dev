@@ -32,6 +32,7 @@ var favicon = require('serve-favicon');
 var path = require('path');
 var multer  = require('multer');
 var mkdirp = require('mkdirp');
+var config = require('./config.json');
 
 var transporter = nodemailer.createTransport({
 	service: 'Gmail',
@@ -40,7 +41,7 @@ var transporter = nodemailer.createTransport({
 	},
 	auth: {
 		user: 'lionel.dupouy@gmail.com',
-		pass: 'J1Z8K0G6C1G8N6'
+		pass: 'uiyiy ouy fuoygip'
 	}
 });
 
@@ -107,7 +108,7 @@ app.get('/', function(req, res){
 
 
 
-app.get('/splitAndSaveVille', function(req, res){
+/*app.get('/splitAndSaveVille', function(req, res){
 	var content = fs.readFileSync(__dirname+'/data/france.csv','UTF-8');
 	var tmp = content.split('\n'); var tab = []; 
 	var tmp2;
@@ -171,7 +172,7 @@ app.get('/splitAndSaveVille', function(req, res){
 
 
 /**
-*Connexion à l'application monager en passant un couple login mot de passe entrainant une vérification dans la base de données
+* Connexion à l'application monager en passant un couple login mot de passe entrainant une vérification dans la base de données
 **/
 app.post('/login', function(req, res){
 
@@ -179,7 +180,7 @@ app.post('/login', function(req, res){
 	if(!isValid(pattern_validator.login, req.body)) {
 		res.status(400).send('Bad Request');
 	} else {
-		var query = Permutant.findOne({name: req.body.login, password: sha1(req.body.password)})
+		var query = Permutant.findOne({name: req.body.login, password: sha1(req.body.password), checked: true})
 		.select('name').select('._id').select('status').select('residence')
 		.select('grade').select('dateAdmin').select('dateGrade').select('service')
 		.select('description').select('destination').select('dateConnexion')
@@ -206,7 +207,7 @@ app.post('/login', function(req, res){
 });
 
 /**
-*Déconnexion de l'application et destruction de la session utilisateur stocké dans mongodb
+* Déconnexion de l'application et destruction de la session utilisateur stocké dans mongodb
 **/
 app.get('/logout', [sessionCheck], function(req, res){
 	var login = req.session.userAuthenticated.name;
@@ -223,32 +224,35 @@ app.get('/logout', [sessionCheck], function(req, res){
 });
 
 /**
-*Mise à jour du profil utilisateur
+* Mise à jour du profil utilisateur
 **/
 app.post('/updateUser', [sessionCheck], function(req, res){
-
-	var userData = beforeRegister(req.body);
-	console.log(userData, 'userData');
-	var query = Permutant.findOneAndUpdate({_id: req.session.userAuthenticated._id}, userData);
-	query.exec(function(error, user){
-		var beforeRenderUser = beforeRender(user);
-
-		if(error){
-			console.error(error, 'Erreur de mis à jour d\'un utilisateur');
-			var message = "error:db-update";
-		}else{
-			console.log('Utilisateur: '+userData.name+' bien mis à jour !');
-			var message = "response:update-user-success";
-		}
-		res.send({code:message, content: beforeRenderUser});
-	});
+	if (!isValid(pattern_validator.updateUser, req.body)) {
+		res.status(400).send('Bad Request');
+	} else {
+		var userData = beforeRegister(req.body);
+		var query = Permutant.findOneAndUpdate({_id: req.session.userAuthenticated._id}, userData);
+		query.exec(function(error, user){
+			var beforeRenderUser = beforeRender(user);
+			if(error){
+				console.error(error, 'Erreur de mis à jour d\'un utilisateur');
+				var message = "error:db-update";
+				res.status(500);
+			}else{
+				console.log('Utilisateur: '+userData.name+' bien mis à jour !');
+				var message = "response:update-user-success";
+				res.status(200);
+			}
+			res.send({code:message, content: beforeRenderUser});
+		});
+	}
 });
 
 /**
 *Sauvegarde un permutant en base de données
 **/
 app.post('/addUser', function(req, res){
-	console.log(req.body);
+
 	if (!isValid(pattern_validator.signIn, req.body)) {
 		res.status(400).send('Bad Request');
 	} else {
@@ -279,7 +283,7 @@ app.post('/addUser', function(req, res){
 							    subject: '[Permut.com] Confirmation d\'inscription', // Subject line
 							    html: 'Vous recevez cet email car vous souhaitez vous inscrire à Permut.com,<br>'+
 							    'si vous êtes bien l\'auteur de la demande, cliquez sur le lien ci dessous pour valider vore inscription puis rendez vous sur le site pour vous connecter<br>'+
-							    '<a href="http://192.168.0.123:8000/validInscription/'+dataToSave.tokken+'">Je click ici pour valider mon inscription !</a>' // plaintext body   
+							    '<a href="http://192.168.0.123:8000/validInscription/'+dataToSave.tokken+'">Je clique ici pour valider mon inscription !</a>' // plaintext body   
 							};
 							// send mail with defined transport object
 							transporter.sendMail(mailOptions, function(error, info){
@@ -290,7 +294,6 @@ app.post('/addUser', function(req, res){
 									res.status(200).send({ code: "response:register-success" });
 								}
 							});
-							
 						}
 					}); 
 		      	}//enfif user.length
@@ -302,7 +305,7 @@ app.post('/addUser', function(req, res){
 
 /**
 * Sauvegarde l'avatar de l'utilisateur en base de données
-*
+* @TODO proteger l'upload
 **/
 app.post('/avatar', function(req, res){
 	
@@ -311,12 +314,12 @@ app.post('/avatar', function(req, res){
   	binaryData = new Buffer(base64Data, 'base64').toString('binary'); 
 	var login = req.session.userAuthenticated.name;
 	var folder = login.substr(0,1);
-	var rand = Math.floor((Math.random() * 1000) + 1);
+	//var rand = Math.floor((Math.random() * 1000) + 1);
 	
 	mkdirp(__dirname + '/avatars/'+ folder, function(error) {
-		fs.writeFile(__dirname +"/avatars/"+folder+"/"+login+rand+".png", binaryData, "binary", function(err) {
+		fs.writeFile(__dirname +"/avatars/"+folder+"/"+login/*+rand*/+".png", binaryData, "binary", function(err) {
 	  		console.log(err); // writes out file without error, but it's not a valid image
-	  		var query = Permutant.findOneAndUpdate({_id: req.session.userAuthenticated._id}, {avatar: '/avatars/'+folder+'/'+login+rand+'.png'});
+	  		var query = Permutant.findOneAndUpdate({_id: req.session.userAuthenticated._id}, {avatar: '/avatars/'+folder+'/'+login/*+rand*/+'.png'});
 			query.exec(function(error, user) {
 				if(error) {
 					res.status(500).send();
@@ -344,6 +347,9 @@ app.get('/validInscription/:tokken', function(req, res){
 });
 
 
+/**
+* Envoie un mail à l'adresse posté en paramètre pour demande à l'utilisateur de confirmer sa demande de recevoir un nouveau mot de passe
+**/
 app.post('/retrievePassword', function(req, res){
 
 	if (!isValid(pattern_validator.retrievePassword, req.body)) {
@@ -359,7 +365,7 @@ app.post('/retrievePassword', function(req, res){
 					    from: 'nodereply@permut.com', // sender address
 					    to: user.email, // list of receivers
 					    subject: '[Permut.com] Perte de votre mot de passe', // Subject line
-					    html: 'Vous recevez cet email car vous avez perdu votre mot de passe,<br>'+
+					    html: 'Vous recevez cet email car vous avez perdu votre mot de passe et vous en demandez un nouveau,<br>'+
 					    'si vous êtes bien l\'auteur de la demande, cliquez sur le lien ci dessous pour recevoir un nouveau mot de passe<br>'+
 					    '<a href="http://localhost:8000/validNewPassword/'+user.tokken+'">Je click ici pour recevoir un nouveau mot de passe !</a>' // plaintext body
 					    
@@ -384,41 +390,48 @@ app.post('/retrievePassword', function(req, res){
 	}
 });
 
+
+/**
+* renvoie par mail un nouveau mot de passe à l'utilisateur
+**/
 app.get('/validNewPassword/:tokken', function(req, res){
-	var cryptedPassword = sha1(req.params.tokken.substr(0,8));
-	var query = Permutant.findOneAndUpdate({tokken: req.params.tokken}, {password: cryptedPassword});
-	query.exec(function(error, user){
-		if(error){
-			res.send('Ce lien n\'existe pas !');
-		}else{
-			if(user){
-				var mailOptions = {
-				    from: 'nodereply@permut.com', // sender address
-				    to: user.email, // list of receivers
-				    subject: '[Permut.com] Nouveau mot de passe', // Subject line
-				    html: 'Voici votre nouveau mot de passe : <strong>'+req.params.tokken.substr(0,8)+'</strong><br>'+
-				    'Connectez vous avez votre login : <strong>'+user.name+'</strong> et ce mot de passe puis changez le rapidement<br>'+
-				    '<a href="http://localhost:8000">www.permut.com</a>'
-				};
-
-				// send mail with defined transport object
-				transporter.sendMail(mailOptions, function(error, info){
-					if(error){
-						console.log(error);
-					}else{
-						console.log('Message sent: ' + info.response);
-					}
-				});
-				res.send('Un nouveau mot de passe vous a été envoyé à '+user.email+' ,verifiez vos spams');
+		console.log(req.params);
+		var cryptedPassword = sha1(req.params.tokken.substr(0,8));
+		var query = Permutant.findOneAndUpdate({tokken: req.params.tokken}, {password: cryptedPassword});
+		query.exec(function(error, user){
+			if(error){
+				res.status(500).send('Ce lien n\'existe pas !');
 			}else{
-				res.send('Ce lien n\'existe pas !');
-			}
-		}
+				if(user){
+					var mailOptions = {
+					    from: 'nodereply@permut.com', // sender address
+					    to: user.email, // list of receivers
+					    subject: '[Permut.com] Nouveau mot de passe', // Subject line
+					    html: 'Voici votre nouveau mot de passe : <strong>'+req.params.tokken.substr(0,8)+'</strong><br>'+
+					    'Connectez vous avez votre login : <strong>'+user.name+'</strong> et ce mot de passe puis changez le rapidement<br>'+
+					    '<a href="http://localhost:8000">www.permut.com</a>'
+					};
 
-	});
+					// send mail with defined transport object
+					transporter.sendMail(mailOptions, function(error, info){
+						if(error){
+							console.log(error);
+						}else{
+							console.log('Message sent: ' + info.response);
+						}
+					});
+					res.status(200).send('Un nouveau mot de passe vous a été envoyé à '+user.email+' ,verifiez vos spams');
+				}else{
+					res.send('Ce lien n\'existe pas !');
+				}
+			}
+		});
 });
 
 
+/**
+* Retourne vrai ou faux si le mot de pass de la session a été retrouvé
+**/
 app.get('/getPassword/:pass', [sessionCheck], function(req, res){
 	var pass = sha1(req.params.pass) || "";
 	var query = Permutant.findOne();
@@ -440,7 +453,7 @@ app.get('/getPassword/:pass', [sessionCheck], function(req, res){
 
 /**
 *Renvoie à l'application la liste des permutants
-**/
+**
 app.get('/showAllUSer', [sessionCheck], function(req, res){
 
 	var query = Permutant.find();
@@ -456,43 +469,57 @@ app.get('/showAllUSer', [sessionCheck], function(req, res){
 			}
 		}
 	});
-});
+});*/
 
+/**
+* Retourne une liste d'utilisateur par type de recherche et en fonction des caractères passés en paramètre
+*
+**/
 app.get('/showBy/:type/:val', [sessionCheck], function(req, res){
-	
-	var regex = new RegExp('^'+req.params.val);
+	var regex = /[\w\(\d\)_ -]/;
+	if( regex.test(req.params.val) ) {
+		var regex = new RegExp('^'+req.params.val);
 
-	var query = Permutant.find();
-	switch(req.params.type){
-		case 'residence':
-		query.where({residence: {$regex: regex, $options: 'i'}});
-		break;
-		case 'grade':
-		query.where({grade: {$regex: regex, $options: 'i'}});
-		break;
-		case 'destination':
-		query.or([{ "destination.choix1" : {$regex: regex, $options: 'i'}}, { "destination.choix2" : {$regex: regex, $options: 'i'}}, { "destination.choix3" : {$regex: regex, $options: 'i'}}]);
-		break;
-	}
-	query.exec(function(error, users){
-		if(error){
-			console.error(error);
-			var message = "error:db-find";
-			res.send({code: message});
-		}else{
-			if(users.length>0){
-				console.log(users, 'villes');
-				var message = "response:users-found";
-				res.send({code: message, content: users});
-			}else{
-				console.error('user not found');
-				var message = "response:users-not-found";
-				res.send({code: message});
-			}
+		var query = Permutant.find();
+		switch(req.params.type){
+			case 'residence':
+			query.where({residence: {$regex: regex, $options: 'i'}});
+			break;
+			case 'grade':
+			query.where({grade: {$regex: regex, $options: 'i'}});
+			break;
+			case 'destination':
+			query.or([{ "destination.choix1" : {$regex: regex, $options: 'i'}}, { "destination.choix2" : {$regex: regex, $options: 'i'}}, { "destination.choix3" : {$regex: regex, $options: 'i'}}]);
+			break;
+			default:
+			res.status(400).Send();
 		}
-	});
+		query.exec(function(error, users){
+			if(error){
+				console.error(error);
+				var message = "error:db-find";
+				res.status(500).send({code: message});
+			}else{
+				if(users.length>0){
+					console.log(users, 'villes');
+					var message = "response:users-found";
+					res.status(200).send({code: message, content: users});
+				}else{
+					console.error('user not found');
+					var message = "response:users-not-found";
+					res.status(200).send({code: message});
+				}
+			}
+		});
+	} else {
+		res.status(400).send('bad request');
+	}
 });
 
+/**
+* Compte le nombre d'utilisateur en base de données
+* @TODO Discriminer le comptage par corps de métier
+**/
 app.get('/countUser', function(req, res){
 	var query = Permutant.count();
 	query.exec(function(error, nbUser){
@@ -507,35 +534,50 @@ app.get('/countUser', function(req, res){
 	});
 });
 
+
+/**
+* Recherche une ville en fonction des caractères passés en paramètre
+* @TODO filtrer :val
+**/
 app.get('/getVilles/:val', [sessionCheck], function(req, res){
-	var regex = new RegExp('^'+req.params.val);
-	var query = Ville.find();
-	query.where({ville: { $regex: regex, $options: 'i'}}).sort('name').limit(20);
-	query.exec(function(error, villes){
-		if(error){
-			console.error(error);
-			var message = "error:db-find";
-			res.send({code: message});
-		}else{
-			if(villes.length>0){
-				console.log(villes, 'villes');
-				var message = "response:villes-found";
-				res.send({code: message, content: villes});
-			}else{
-				console.error('ville not found');
-				var message = "response:villes-not-found";
+	var regexvalue = /[\w\(\d\)_ -]/;
+	if( !regexvalue.test(req.params.val) ) {
+		res.status(400).send('bad request');
+	} else {
+		var regex = new RegExp('^'+req.params.val);
+		var query = Ville.find();
+		query.where({ville: { $regex: regex, $options: 'i'}}).sort('name').limit(20);
+		query.exec(function(error, villes){
+			if(error){
+				console.error(error);
+				var message = "error:db-find";
 				res.send({code: message});
+			}else{
+				if(villes.length>0){
+					console.log(villes, 'villes');
+					var message = "response:villes-found";
+					res.send({code: message, content: villes});
+				}else{
+					console.error('ville not found');
+					var message = "response:villes-not-found";
+					res.send({code: message});
+				}
 			}
-		}
-	});
+		});
+	}
 });
 
 
+/**
+* Vérifie si l'utilisateur peut effectuer une recherche automatique
+*
+**/
 app.get('/checkCycleAvailable', [sessionCheck], function(req, res){
-	var request = Permutant.findOne({_id: req.session.userAuthenticated._id});
+	var request = Permutant.findOne({_id: req.session.userAuthenticated._id, ready: true});
 	request.exec(function(error, user){
 		if(error)
 			var message = { code: "error:db-update"};
+			res.status(500);
 		if(user){
 			console.log(moment.range(user.lastSearch, new Date()).diff('days'));
 			if(moment.range(user.lastSearch, new Date()).diff('days') >= 1 || !user.lastSearch){
@@ -543,6 +585,7 @@ app.get('/checkCycleAvailable', [sessionCheck], function(req, res){
 			}else{
 				var message = {code: "response:forbidden-run-cycle", content: false};
 			}
+			res.status(200);
 		}
 		res.send(message);
 	});
@@ -564,14 +607,14 @@ app.post('/runCycle', [sessionCheck], function(req, res){
 	});*/
 
 var client = beforeRegister(req.body);
+
 var combinaison = {
 	bipartite: [],
 	tripartite: [],
 	quadrapartite: []
 };
 
-var permutantlvl2 = [];
-var permutantlvl3 = [];
+var permutantlvl2 = [], permutantlvl3 = [];
 
 	/**
 	* Récupère la liste des utilisateurs qui sont en poste au même endroit que un des trois choix du visiteur
@@ -586,8 +629,8 @@ var permutantlvl3 = [];
 			{ residence : client.destination.choix3 }]);
 
 		query.exec(deferred.makeNodeResolver());
-		return deferred.promise;
-	}
+		return deferred.promise
+	};
 
 	/**
 	* hydrate la liste des utilisateurs qui peuvent permuter avec le visiteur en bipartite et retourne la liste des résidence
@@ -891,9 +934,11 @@ var permutantlvl3 = [];
 	.then(function(users, error){
 			console.log(users, 'users finals');
 			console.log(combinaison, 'combo');
-			//console.log(error, 'error');
-			console.log(isValid({}, client));
-			res.send(combinaison);
+			if(combinaison.bipartite.length == 0 && combinaison.tripartite.length == 0 && combinaison.quadrapartite.length == 0) {
+				res.status(200).send('no match');
+			} else {
+				res.status(200).send(combinaison);
+			}
 		})
 	.catch(function(err){
 		console.log('in error : ', err);

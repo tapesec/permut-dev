@@ -12,6 +12,12 @@ PermutantServices.constant('USER_STATUS',{
 	admin: 10
 });
 
+PermutantServices.constant('RANDOM',{
+	generate: function() {
+		return Math.floor((Math.random() * 1000));
+	}
+});
+
 PermutantServices.factory('Mail', ['$http', function($http){
 	return {
 
@@ -53,8 +59,16 @@ PermutantServices.factory('User',['$http', '$location', 'localStorageService','$
 			$http.post('/addUser', userData);
 		},
 		update: function(userData){
-			return $http.post('/updateUser', userData)
-				.success(function(response){
+			return $http.post('/updateUser', 
+			{
+				grade: userData.grade,
+				dateEntree: userData.dateEntree,
+				dateGrade: userData.dateGrade,
+				ville: userData.ville,
+				service: userData.service,
+				presentation: userData.presentation,
+				destination: userData.destination
+			}).success(function(response){
 					LocalStorageService.set('UserSession', response.content);
 				});
 		},
@@ -88,8 +102,6 @@ PermutantServices.factory('User',['$http', '$location', 'localStorageService','$
 		},
 		showProfil: function(){
 			var profil = this.get('UserSession');
-			profil.dateEntree = $filter('date')(profil.dateEntree, 'EEEE dd MMMM yyyy');
-			profil.dateGrade = $filter('date')(profil.dateGrade, 'EEEE dd MMMM yyyy');
 			return profil;
 		},
 		getPassword: function(password){
@@ -172,6 +184,7 @@ PermutantServices.factory('Show', ['User', function(User){
 		isVisible: function(item){
 			switch(item){
 				case 'connexion':
+				case 'about':
 					return !User.isAuthenticated();
 					break;
 				case 'profil':

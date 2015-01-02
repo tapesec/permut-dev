@@ -27,7 +27,7 @@ PermutantCtrl.controller('IndexCtrl', ['$rootScope', '$scope', 'User','Permutati
 	    function DetailPosteCtrl($scope, $modalInstance, infos) {
 	    	
 	    	$scope.infos = infos;
-	    	console.log(infos);
+	   
 	    	$scope.close = function(){
   				$modalInstance.close();
   			}
@@ -142,6 +142,11 @@ PermutantCtrl.controller('AppCtrl', ['$rootScope', '$location', AppCtrl]);
 		});
 	}
 
+PermutantCtrl.controller('AboutCtrl', function() {
+
+
+});
+
 PermutantCtrl.controller('RegisterCtrl', ['$scope','User','$http','Mail', function($scope, User, $http, Mail){
 
 	//Connexion
@@ -188,10 +193,13 @@ PermutantCtrl.controller('RegisterCtrl', ['$scope','User','$http','Mail', functi
  
 }]);
 
-PermutantCtrl.controller('EditionCtrl', ['$scope', '$rootScope', 'User', '$filter','Ville', '$modal', '$http',
-	function($scope, $rootScope, User, $filter, Ville, $modal, $http){
+PermutantCtrl.controller('EditionCtrl', ['$scope', '$rootScope', 'User', '$filter','Ville', '$modal', 'RANDOM',
+	function($scope, $rootScope, User, $filter, Ville, $modal, RANDOM){
 	
 	$scope.profil = User.showProfil();
+	$scope.avatar = {
+		randomparams : RANDOM.generate()
+	}
 	
 	$scope.listGrade = 'Gardien de la Paix, Brigadier, Brigadier Chef, Major, Lieutenant, Capitaine, Commandant'.split(',');
 
@@ -247,17 +255,25 @@ PermutantCtrl.controller('EditionCtrl', ['$scope', '$rootScope', 'User', '$filte
 	   	modalInstance.result.then(function (data) {
       		User.sendAvatar(data).then(function(result) {
 				$scope.profil = User.showProfil();
+				$scope.avatar.randomparams = RANDOM.generate();
 			});	
     	});
 	}
 
+	$scope.lire = function () {
+
+	    var modalInstance = $modal.open({
+		    templateUrl: 'partials/popups/a-lire.html',
+		    controller: AlireCtrl
+	    });
+
+	    function AlireCtrl($scope, $modalInstance) {
+
+	    	$scope.close = function(){
+  				$modalInstance.close();
+  			}
+	    }
+	};
+
 
 }]);
-
-PermutantCtrl.controller('DetailPosteCtrl', function($scope, $modalInstance, infos) {
-
-  	$scope.infos = infos;
-  	$scope.close = function(){
-  		$modalInstance.close();
-  	}
-});

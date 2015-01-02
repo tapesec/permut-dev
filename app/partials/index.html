@@ -1,17 +1,33 @@
 <div class="no-marge bg-auto-search">
 <div class="row">
 <!--<pre>{{match | json}}</pre>-->
-	<div class="col-lg-12" ng-if="!match">
+	<div class="col-lg-12" ng-if="!match && user.ready == true">
 		<div class="col-lg-4 col-lg-offset-4">
 			<button ng-click="searchAboutPermutation()" ng-disabled="!user.ready || !user.cycleAvailable" class="btn btn-lg btn-success btn-block"><span class="glyphicon glyphicon-search"></span> Cherchez un permutant !</button>
 		</div>
 	</div>
-</div>
 
+</div>
+<div class="row" ng-if="!match && user.ready == false">
+	<div class="col-lg-6 col-lg-offset-3">
+		<div class="alert alert-danger">
+			<p>Votre profil n'est pas complet, vous ne pouvez donc pas encore chercher de permutant.<br>
+			Par le menu ci dessus, rendez vous dans la page <span class="label label-primary"><span class="glyphicon glyphicon-user"></span> Mon profil</span> pour completer les informations et n'oubliez pas de cliquer sur le bouton <span class="label label-warning"><span class="glyphicon glyphicon-info-sign"></span> à lire absolument</span></p>
+			<p>Si vous ne l'avez pas encore fait, commencez par lire la section <span class="label label-primary"><span class="glyphicon glyphicon-question-sign"></span> à propos</span> pour en savoir plus sur notre Père Mut' et ses créateurs.</p>
+		</div>
+	</div>
+</div>
+<div class="row" ng-if="match == 'no match'">
+	<div class="col-lg-6 col-lg-offset-3">
+		<div class="alert alert-info">
+			<p>Le père mut' ne vous a pas trouvé de permutant pour le moment, mais réessayez un autre jour quand plus de monde ce sera inscris et vos chances auront augmentées.</p>
+		</div>
+	</div>
+</div>
 <!--<pre>{{user | json}}</pre>-->
 <!-- bipartite -->
 
-<div class="row-fluid" ng-if="match.bipartite">
+<div class="row" ng-if="match.bipartite">
 	<div class="col-lg-12" ng-repeat="bi in match.bipartite">
 		
 		<div class="row panel panel-success">
@@ -19,10 +35,10 @@
 				<span class="lead"><i class="fa fa-angellist"></i> Permutation bi-partite possible !</span>
 			</div>
 			<div class="panel-body">
-				<div class="col-lg-3">
+				<div class="col-lg-2">
 					
 				</div>
-				<div class="col-lg-2">
+				<div class="col-lg-3">
 					<div class="thumbnail">
 						<img src="{{bi.pos1.avatar}}" alt="..." class="img-circle img-responsive">
 						<div class="caption">
@@ -39,7 +55,7 @@
 				<div class="col-lg-2">
 					<div class="text-center h1 bi-transfer-icon"><span class="glyphicon glyphicon-transfer"></span> </div>
 				</div>
-				<div class="col-lg-2">
+				<div class="col-lg-3">
 					<div class="thumbnail">
 						<img src="{{bi.pos2.avatar}}" alt="..." class="img-circle img-responsive">
 						<div class="caption">
@@ -58,8 +74,8 @@
 </div>
 
 
-<!-- quadrapartite -->
-<div class="row-fluid" ng-if="match.tripartite">
+<!-- tripartite -->
+<div class="row" ng-if="match.tripartite">
 	<div class="col-lg-12" ng-repeat="tri in match.tripartite">
 
 		<div class="row panel panel-success">
@@ -142,7 +158,7 @@
 
 
 <!-- quadrapartite -->
-<div class="row-fluid" ng-if="match.quadrapartite">
+<div class="row" ng-if="match.quadrapartite">
 	<div class="col-lg-12" ng-repeat="quadra in match.quadrapartite">
 
 		<div class="row panel panel-success">

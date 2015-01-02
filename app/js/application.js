@@ -62,6 +62,10 @@ Permutator.config(['$routeProvider', 'USER_STATUS', '$httpProvider', function($r
     templateUrl: 'partials/password-perdu.html',
     controller: 'RegisterCtrl'
 })
+.when('/about', {
+    templateUrl: 'partials/about.html',
+    controller: 'AboutCtrl'
+})
 .otherwise({redirectTo: '/login'});
 
 $httpProvider.interceptors.push('HttpInterceptor');
