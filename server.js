@@ -1,6 +1,7 @@
 //Chargement de la base de données et connexion via le module mongoose
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/permutationDATA');
+var config = require('./config.json');
+mongoose.connect('mongodb://'+config.mongoUrl+'/permutationDATA');
 
 var db = mongoose.connection;
 
@@ -32,7 +33,6 @@ var favicon = require('serve-favicon');
 var path = require('path');
 var multer  = require('multer');
 var mkdirp = require('mkdirp');
-var config = require('./config.json');
 
 var transporter = nodemailer.createTransport({
 	service: 'Gmail',
@@ -41,7 +41,7 @@ var transporter = nodemailer.createTransport({
 	},
 	auth: {
 		user: 'lionel.dupouy@gmail.com',
-		pass: 'uiyiy ouy fuoygip'
+		pass: 'thepassword'
 	}
 });
 
@@ -95,7 +95,7 @@ function sessionCheck(req, res, next){
 
 
 //Lancement du serveur
-var server = app.listen(8000, function(){
+var server = app.listen(config.port, function(){
 	console.log('c\'est parti !');
 });
 
@@ -283,7 +283,7 @@ app.post('/addUser', function(req, res){
 							    subject: '[Permut.com] Confirmation d\'inscription', // Subject line
 							    html: 'Vous recevez cet email car vous souhaitez vous inscrire à Permut.com,<br>'+
 							    'si vous êtes bien l\'auteur de la demande, cliquez sur le lien ci dessous pour valider vore inscription puis rendez vous sur le site pour vous connecter<br>'+
-							    '<a href="http://192.168.0.123:8000/validInscription/'+dataToSave.tokken+'">Je clique ici pour valider mon inscription !</a>' // plaintext body   
+							    '<a href="http://'+config.domaineUrl+':'+config.port+'/validInscription/'+dataToSave.tokken+'">Je clique ici pour valider mon inscription !</a>' // plaintext body   
 							};
 							// send mail with defined transport object
 							transporter.sendMail(mailOptions, function(error, info){
@@ -367,7 +367,7 @@ app.post('/retrievePassword', function(req, res){
 					    subject: '[Permut.com] Perte de votre mot de passe', // Subject line
 					    html: 'Vous recevez cet email car vous avez perdu votre mot de passe et vous en demandez un nouveau,<br>'+
 					    'si vous êtes bien l\'auteur de la demande, cliquez sur le lien ci dessous pour recevoir un nouveau mot de passe<br>'+
-					    '<a href="http://localhost:8000/validNewPassword/'+user.tokken+'">Je click ici pour recevoir un nouveau mot de passe !</a>' // plaintext body
+					    '<a href="http://'+config.domaineUrl+':'+config.port+'/validNewPassword/'+user.tokken+'">Je click ici pour recevoir un nouveau mot de passe !</a>' // plaintext body
 					    
 					};
 
@@ -409,7 +409,7 @@ app.get('/validNewPassword/:tokken', function(req, res){
 					    subject: '[Permut.com] Nouveau mot de passe', // Subject line
 					    html: 'Voici votre nouveau mot de passe : <strong>'+req.params.tokken.substr(0,8)+'</strong><br>'+
 					    'Connectez vous avez votre login : <strong>'+user.name+'</strong> et ce mot de passe puis changez le rapidement<br>'+
-					    '<a href="http://localhost:8000">www.permut.com</a>'
+					    '<a href="http://'+config.domaineUrl+':'+config.port+'">www.permut.com</a>'
 					};
 
 					// send mail with defined transport object

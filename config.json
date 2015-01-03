@@ -1,6 +1,6 @@
 {
-	"mongoUrl": "",
-	"domaineUrl": "http://localhost",
+	"mongoUrl": "localhost",
+	"domaineUrl": "localhost",
 	"port": "8000",
 	"hostMailUrl": ""
 }
