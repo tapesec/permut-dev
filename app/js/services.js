@@ -67,9 +67,19 @@ PermutantServices.factory('User',['$http', '$location', 'localStorageService','$
 				ville: userData.ville,
 				service: userData.service,
 				presentation: userData.presentation,
-				destination: userData.destination
+				destination: userData.destination,
+				email: userData.email
 			}).success(function(response){
 					LocalStorageService.set('UserSession', response.content);
+				});
+		},
+		remove: function() {
+			var that = this;
+			$http.get('/removeUser')
+				.success(function(response) {
+					if(response.code != 'error:db-remove') {
+						that.logout();
+					}
 				});
 		},
 		login: function(credential){
@@ -78,7 +88,7 @@ PermutantServices.factory('User',['$http', '$location', 'localStorageService','$
 				.success(function(response){
 					if(response.content){
 						LocalStorageService.set('UserSession', response.content);
-						$location.path('/index');
+						$location.path('/about');
 					}
 				});
 		},
@@ -252,7 +262,7 @@ PermutantServices.factory('ResponseInterpreter', ['$location', 'localStorageServ
 					humane.log(this.iconeInfo+ 'Utilisateur bien connecté !', { timeout: 3000, clickToClose: true, addnCls: this.class[2] });
 					break;	
 				case 'response:user-not-found':
-					humane.log(this.iconeError+ 'Vous n\'êtes pas inscris !<br>Remplissez le formulaire d\'inscription en 4 lignes', { timeout: 3000, clickToClose: true, addnCls: this.class[1] });
+					humane.log(this.iconeError+ 'Vous n\'êtes pas inscris ! ou vous n\'avez pas encore validé votre inscription via votre boite mail.<br>Remplissez le formulaire d\'inscription en 4 lignes', { timeout: 6000, clickToClose: true, addnCls: this.class[1] });
 					break;
 				case 'response:users-load-success':
 					console.log('Liste des utilisateurs bien chargé !');
@@ -263,6 +273,8 @@ PermutantServices.factory('ResponseInterpreter', ['$location', 'localStorageServ
 				case "response:update-user-success":
 					humane.log(this.iconeInfo+ 'Profil bien mis à jour', { timeout: 3000, clickToClose: true, addnCls: this.class[2] });
 					break;
+				case 'response:delete-success':
+					humane.log(this.iconeInfo+ 'Le père mut vous souhaite bon vent !', { timeout: 5000, clickToClose: true, addnCls: this.class[0] });
 				case "response:avatar-uploaded":
 					humane.log(this.iconeInfo+ 'Avatar bien sauvegardé !', { timeout: 3000, clickToClose: true, addnCls: this.class[2] });
 					break;

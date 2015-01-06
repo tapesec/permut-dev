@@ -1,4 +1,4 @@
-<div class="no-marge bg-auto-search">
+<div class="no-marge bg-auto-search container-fluid">
 <div class="row">
 <!--<pre>{{match | json}}</pre>-->
 	<div class="col-lg-12" ng-if="!match && user.ready == true">
@@ -40,7 +40,7 @@
 				</div>
 				<div class="col-lg-3">
 					<div class="thumbnail">
-						<img src="{{bi.pos1.avatar}}" alt="..." class="img-circle img-responsive">
+						<img ng-src="{{bi.pos1.avatar}}" alt="..." class="img-circle img-responsive">
 						<div class="caption">
 							<h3 class="text-center text-success text-uppercase">{{bi.pos1.login}}</h3>
 							<p>
@@ -57,7 +57,7 @@
 				</div>
 				<div class="col-lg-3">
 					<div class="thumbnail">
-						<img src="{{bi.pos2.avatar}}" alt="..." class="img-circle img-responsive">
+						<img ng-src="{{bi.pos2.avatar}}" alt="..." class="img-circle img-responsive">
 						<div class="caption">
 							<h3 class="text-center text-capitalize">{{bi.pos2.login}}</h3>
 							<p>
@@ -83,15 +83,15 @@
 				<span class="lead"><i class="fa fa-angellist"></i> Permutation tri-partite possible !</span>
 			</div>
 			<div class="panel-body">
-				<div class="col-lg-2">
+				<div class="col-lg-2 col-lg-offset-1">
 					<div class="thumbnail">
-						<img src="{{tri.pos1.avatar}}" alt="..." class="img-circle img-responsive">
+						<img ng-src="{{tri.pos1.avatar}}" alt="..." class="img-circle img-responsive">
 						<div class="caption">
 							<h3 class="text-center text-success text-uppercase">{{tri.pos1.login}}</h3>
 							<p>
-								<span class="glyphicon glyphicon-map-marker"></span> {{tri.pos1.residence}}
+								<span class="glyphicon glyphicon-map-marker"></span> <small>{{tri.pos1.residence}}</small>
 								<br>
-								<span class="glyphicon glyphicon-bookmark"></span> {{tri.pos1.service}}</p>
+								<span class="glyphicon glyphicon-bookmark"></span> <small>{{tri.pos1.service}}</small></p>
 							<p>
 							<p><a ng-click="open(tri.pos1)" class="btn btn-primary btn-block" role="button">Voir les détails</a></p>
 						</div>
@@ -102,13 +102,13 @@
 				</div>
 				<div class="col-lg-2">
 					<div class="thumbnail" ng-repeat="pos2 in tri.pos2">
-						<img src="{{pos2.avatar}}" alt="..." class="img-circle img-responsive">
+						<img ng-src="{{pos2.avatar}}" alt="..." class="img-circle img-responsive">
 						<div class="caption">
 							<h3 class="text-center text-capitalize">{{pos2.login}}</h3>
 							<p>
-								<span class="glyphicon glyphicon-map-marker"></span> {{pos2.residence}}
+								<span class="glyphicon glyphicon-map-marker"></span> <small>{{pos2.residence}}</small>
 								<br>
-								<span class="glyphicon glyphicon-bookmark"></span> {{pos2.service}}
+								<span class="glyphicon glyphicon-bookmark"></span> <small>{{pos2.service}}</small>
 							<p>
 							<p><a ng-click="open(pos2)" class="btn btn-default btn-block" role="button">Voir les détails</a></p>
 						</div>
@@ -119,13 +119,13 @@
 				</div>
 				<div class="col-lg-2">
 					<div class="thumbnail">
-						<img src="{{tri.pos3.avatar}}" alt="..." class="img-circle img-responsive">
+						<img ng-src="{{tri.pos3.avatar}}" alt="..." class="img-circle img-responsive">
 						<div class="caption">
 							<h3 class="text-center text-capitalize">{{tri.pos3.login}}</h3>
 							<p>
-								<span class="glyphicon glyphicon-map-marker"></span> {{tri.pos3.residence}}
+								<span class="glyphicon glyphicon-map-marker"></span> <small>{{tri.pos3.residence}}</small>
 								<br>
-								<span class="glyphicon glyphicon-bookmark"></span> {{tri.pos3.service}}</p>
+								<span class="glyphicon glyphicon-bookmark"></span> <small>{{tri.pos3.service}}</small></p>
 							<p>
 							<p><a ng-click="open(tri.pos3)" class="btn btn-primary btn-block" role="button">Voir les détails</a></p>
 						</div>
@@ -134,19 +134,8 @@
 				<div class="col-lg-1">
 					<div class="text-center h1 bi-transfer-icon"><i class="fa fa-arrow-right"></i> </div>
 				</div>
-				<div class="col-lg-2">
-					<div class="thumbnail">
-						<img src="{{tri.pos4.avatar}}" alt="..." class="img-circle img-responsive">
-						<div class="caption">
-							<h3 class="text-center text-success text-uppercase">{{tri.pos4.login}}</h3>
-							<p>
-								<span class="glyphicon glyphicon-map-marker"></span> {{tri.pos4.residence}}
-								<br>
-								<span class="glyphicon glyphicon-bookmark"></span> {{tri.pos4.service}}</p>
-							<p>
-							<p><a ng-click="open(tri.pos4)" class="btn btn-primary btn-block" role="button">Voir les détails</a></p>
-						</div>
-					</div>
+				<div class="col-lg-1">
+					<div class="text-center h1 bi-transfer-icon"><small>Vous..</small></div>
 				</div>
 			</div>
 		</div>
@@ -162,59 +151,80 @@
 	<div class="col-lg-12" ng-repeat="quadra in match.quadrapartite">
 
 		<div class="row panel panel-success">
-			<div class="panel-heading">
-				<p><center>Permutation quadra-partite possible !</center></p>
+			<div class="panel-heading text-center">
+				<span class="lead"><i class="fa fa-angellist"></i> Permutation quadra-partite possible !</span>
 			</div>
 			<div class="panel-body">
-				<div class="col-lg-2 col-lg-offset-1">
+				<div class="col-lg-2">
 					<div class="thumbnail">
-						<img ng-src="{{quadra.pos1.avatar}}" alt="...">
+						<img ng-src="{{quadra.pos1.avatar}}" alt="avatar de {{quadra.pos1.login}}" class="img-circle img-responsive">
 						<div class="caption">
-							<h3>{{quadra.pos1.login}}</h3>
-							<p>{{quadra.pos1.residence}}<br>{{quadra.pos1.service}}<br>{{quadra.pos1.description}}</p>
+							<h3 class="text-center text-success text-uppercase">{{quadra.pos1.login}}</h3>
+							<p>
+								<span class="glyphicon glyphicon-map-marker"></span> <small>{{quadra.pos1.residence}}</small>
+								<br>
+								<span class="glyphicon glyphicon-bookmark"></span> <small>{{quadra.pos1.service}}</small></p>
+							<p>
 							<p><a ng-click="open(quadra.pos1)" class="btn btn-primary btn-block" role="button">Voir les détails</a></p>
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-2" ng-repeat="pos2 in quadra.pos2">
-					<div class="thumbnail">
-						<img ng-src="{{pos2.avatar}}" alt="...">
+				<div class="col-lg-1">
+					<div class="text-center h1 bi-transfer-icon"><i class="fa fa-arrow-right"></i> </div>
+				</div>
+				<div class="col-lg-2">
+					<div class="thumbnail" ng-repeat="pos2 in quadra.pos2">
+						<img ng-src="{{pos2.avatar}}" alt="avatar de {{pos2.login}}" class="img-circle img-responsive">
 						<div class="caption">
-							<h3>{{pos2.login}}</h3>
-							<p>{{pos2.residence}}<br>{{pos2.service}}<br>{{pos2.description}}</p>
-							<p><a ng-click="open(pos2)" class="btn btn-default btn-block" role="button">Voir les détails</a></p>
+							<h3 class="text-center text-success text-uppercase">{{pos2.login}}</h3>
+							<p>
+								<span class="glyphicon glyphicon-map-marker"></span> <small>{{pos2.residence}}</small>
+								<br>
+								<span class="glyphicon glyphicon-bookmark"></span> <small>{{pos2.service}}</small></p>
+							<p>
+							<p><a ng-click="open(pos2)" class="btn btn-primary btn-block" role="button">Voir les détails</a></p>
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-2" ng-repeat="pos3 in quadra.pos3">
-					<div class="thumbnail">
-						<img ng-src="{{pos3.avatar}}" alt="...">
+				<div class="col-lg-1">
+					<div class="text-center h1 bi-transfer-icon"><i class="fa fa-arrow-right"></i> </div>
+				</div>
+				<div class="col-lg-2">
+					<div class="thumbnail" ng-repeat="pos3 in quadra.pos3">
+						<img ng-src="{{pos3.avatar}}" alt="avatar de {{pos3.login}}" class="img-circle img-responsive">
 						<div class="caption">
-							<h3>{{pos3.login}}</h3>
-							<p>{{pos3.residence}}<br>{{pos3.service}}<br>{{pos3.description}}</p>
+							<h3 class="text-center text-success text-uppercase">{{pos3.login}}</h3>
+							<p>
+								<span class="glyphicon glyphicon-map-marker"></span> <small>{{pos3.residence}}</small>
+								<br>
+								<span class="glyphicon glyphicon-bookmark"></span> <small>{{pos3.service}}</small></p>
+							<p>
 							<p><a ng-click="open(pos3)" class="btn btn-primary btn-block" role="button">Voir les détails</a></p>
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-2">
-					<div class="thumbnail">
-						<img ng-src="{{quadra.pos4.avatar}}" alt="...">
-						<div class="caption">
-							<h3>{{quadra.pos4.login}}</h3>
-							<p>{{quadra.pos4.residence}}<br>{{quadra.pos4.service}}<br>{{quadra.pos4.description}}</p>
-							<p><a ng-click="open(quadra.pos4)" class="btn btn-default btn-block" role="button">Voir les détails</a></p>
-						</div>
-					</div>
+				<div class="col-lg-1">
+					<div class="text-center h1 bi-transfer-icon"><i class="fa fa-arrow-right"></i> </div>
 				</div>
 				<div class="col-lg-2">
 					<div class="thumbnail">
-						<img ng-src="{{quadra.pos5.avatar}}" alt="...">
+						<img ng-src="{{quadra.pos4.avatar}}" alt="avatar de {{quadra.pos4.login}}" class="img-circle img-responsive">
 						<div class="caption">
-							<h3>{{quadra.pos5.login}}</h3>
-							<p>{{quadra.pos5.residence}}<br>{{quadra.pos5.service}}<br>{{quadra.pos5.description}}</p>
-							<p><a ng-click="open(quadra.pos5)" class="btn btn-primary btn-block" role="button">Voir les détails</a></p>
+							<h3 class="text-center text-success text-uppercase">{{quadra.pos4.login}}</h3>
+							<p>
+								<span class="glyphicon glyphicon-map-marker"></span> <small>{{quadra.pos4.residence}}</small>
+								<br>
+								<span class="glyphicon glyphicon-bookmark"></span> <small>{{quadra.pos4.service}}</small></p>
+							<p>
+							<p><a ng-click="open(quadra.pos4)" class="btn btn-primary btn-block" role="button">Voir les détails</a></p>
 						</div>
 					</div>
+				</div>
+				<div class="col-lg-1">
+					<div class="text-center h1 bi-transfer-icon"><i class="fa fa-arrow-right"></i> </div>
+				</div>
+				<div class="col-lg-1">
+					<div class="text-center h1 bi-transfer-icon"><small>Vous..</small></div>
 				</div>
 			</div>
 		</div>

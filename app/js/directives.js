@@ -66,29 +66,52 @@ PermutantDirectives.directive('autofill', function(){
 	}
 });
 
-PermutantDirectives.directive('confirmPassword', function($parse){
+PermutantDirectives.directive('confirmPassword', function($parse, $timeout){
 	return{
 		restrict: 'A',
 		require: 'ngModel',
 		link: function(scope, elem, attrs, ctrl){
 			scope.$watch(attrs.ngModel, function(){
 				if(scope.$eval(attrs.ngModel) != scope.$eval(attrs.password)){
-					ctrl.$setValidity('like', false);
+					ctrl.$setValidity('unlike', false);
 				}else{
-					ctrl.$setValidity('like', true);
+					ctrl.$setValidity('unlike', true);
 				}
 			});
 			scope.$watch(attrs.password, function(){
 				if(scope.$eval(attrs.ngModel) != scope.$eval(attrs.password)){
-					ctrl.$setValidity('like', false);
+					ctrl.$setValidity('unlike', false);
 				}else{
-					ctrl.$setValidity('like', true);
+					ctrl.$setValidity('unlike', true);
 				}
 			});
-				
-
+			/*$timeout(function() {
+				ctrl.$setValidity('unlike', false);
+			});*/
 		}
 	}
+});
+
+PermutantDirectives.directive('captcha', function() {
+
+	return {
+		restrict: 'A',
+		require: 'ngModel',
+		link: function(scope, elem, attrs, ctrl) {
+
+			ctrl.$setValidity('captchaOk', false);
+			scope.captcha.result = scope.$eval(attrs.opun) * scope.$eval(attrs.opdeux) + 4;
+
+			scope.$watch(attrs.ngModel, function() {
+				if (scope.$eval(attrs.ngModel) == scope.captcha.result) {
+					ctrl.$setValidity('captchaOk', true);
+				} else {
+					ctrl.$setValidity('captchaOk', false);
+				}
+			});
+		}
+	}
+
 });
 /*Directive qui détermine la validité d'un champ en fonction du boolean passé à l'attribut correct*/
 PermutantDirectives.directive('checkPassword', function(){

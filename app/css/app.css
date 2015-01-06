@@ -16,7 +16,24 @@ body {
   height: 100%;
   background-color: #f5f5f5;
 }
+.foo {
+  font-family: 'Foo';
+  font-weight: normal;
+}
+#uploaderModal {
+  position: relative;
+}
 
+#manual-search-area {
+  position:fixed; 
+  right:0; 
+  left:0; 
+  z-index:1100;
+}
+
+#manual-search-area .well {
+  background-color: rgba(205, 203, 201, 0.3);
+}
 .navbar-fixed-adjust {
   margin-top: 80px;
 }
@@ -54,16 +71,10 @@ body {
 
 }
 
-#img-prev {
-  margin: 60px;
-}
 .cursor{
     cursor: pointer;
 }
 
-.form-inline .form-control {
-   
-}
 /** Typeahead **/
 ul.typeahead li{
   padding:4px 9px;
@@ -91,9 +102,6 @@ div.liaison {
   margin:auto;
 }
 
-#croparea {
-  visibility: hidden;
-}
 
 @font-face {
   font-family: 'Foo';

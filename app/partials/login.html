@@ -2,6 +2,7 @@
 	<div class="col-lg-6 col-lg-offset-2 block-annonce">
 		<h1>Le père Mut' vous souhaite la bienvenue !</h1>
 		<h2>Votre permutation n'est qu'à un clique..</h2>
+		<button class="pull-right btn btn-lg btn-info" ng-click="savoir()"><h2>Pour en savoir<br>plus, cliquez<br> ici</h2></button>
 	</div>	
 	
 	<div class="col-lg-3">
@@ -9,10 +10,10 @@
 			<form name="form:login" ng-submit="connexion()" role="form">
 				<fieldset>
 					<div class="form-group">
-						<input class="form-control input-sm" type="text" name="login:login" ng-model="login.login" placeholder="Login">
+						<input class="form-control input-sm" type="text" name="loginLogin" ng-model="login.login" placeholder="Login" required>
 					</div>
 					<div class="form-group">
-						<input class="form-control input-sm" type="password" name="login:password" ng-model="login.password" placeholder="Mot de passe">
+						<input class="form-control input-sm" type="password" name="loginPassword" ng-model="login.password" placeholder="Mot de passe" required>
 					</div>
 					<small><a href="#/forget-password">Mot de passe oublié ?</a></small>
 					<button type="submit" class="btn btn-sm btn-block btn-success">Connexion</button>
@@ -20,27 +21,41 @@
 			</form>
 		</div>
 		<div class="well bs-component">
-			<form name="form:sign" ng-submit="register()" role="form">
+			<form name="formSign" ng-submit="register()" role="form">
 				<fieldset>
 					<legend>Nouveau sur Permut.com ? <small>inscrivez vous</small></legend>
 					<div class="form-group">
-					<input class="form-control input-sm" type="text" name="sign:login" ng-model="sign.login" placeholder="Login (Pas de nom de famille)">
+						<input class="form-control input-sm" type="text" name="signLogin" ng-model="sign.login" placeholder="Pseudo (Pas de nom de famille)" ng-minlength="2" required>
+						<small class="help-block text-danger" ng-show="formSign.signLogin.$invalid && formSign.signLogin.$touched">
+							<span class="glyphicon glyphicon-warning-sign"></span> <strong>Choisissez un pseudo d'au moins 2 caractères ..</strong>
+						</small>
 					</div>
 					<div class="form-group">
-					<input class="form-control input-sm" type="text" name="sign:email" ng-model="sign.email" placeholder="Adresse email" title="Evitez les émails contenant votre nom">
+						<input class="form-control input-sm" type="email" name="signEmail" ng-model="sign.email" placeholder="Adresse email" title="Evitez les émails contenant votre nom" required>
+						<small class="help-block text-danger" ng-show="formSign.signEmail.$invalid && formSign.signEmail.$touched">
+							<span class="glyphicon glyphicon-warning-sign"></span> <strong>Ce format d'adresse email est invalide</strong>
+						</small>
 					</div>
 					<div class="form-group">
-					<input class="form-control input-sm" type="password" name="sign:password" ng-model="sign.password" placeholder="Mot de passe">
+						<input class="form-control input-sm" type="password" name="signPassword" ng-model="sign.password" placeholder="Mot de passe" ng-minlength="6" required>
+						<small class="help-block text-danger" ng-show="formSign.signPassword.$invalid && formSign.signPassword.$touched">
+							<span class="glyphicon glyphicon-warning-sign"></span> <strong>Choisissez un mot de passe d'au moins 6 caractères</strong>
+						</small>
 					</div>
 					<div class="form-group">
-					<input class="form-control input-sm" type="password" name="sign:password2" ng-model="confirm.password" placeholder="Confirmer">
+						<input class="form-control input-sm" type="password" confirm-password password="sign.password" name="signPassword2" ng-model="confirm.password2" placeholder="Confirmer">
+						<small class="help-block text-danger" ng-show="formSign.signPassword2.$invalid && formSign.signPassword2.$touched">
+							<span class="glyphicon glyphicon-warning-sign"></span> <strong>Le mot de passe ne correspond pas..</strong>
+						</small>
 					</div>
 					<div class="form-group">
-					<label>Combien font ({{captcha.op1}} multiplié par {{captcha.op2}}) plus quatre ? </label>
-					<input class="form-control input-sm" type="text" name="captcha:inputResult" ng-model="captcha.inputResult" ng-change="
-					captchaObserver(captcha.inputResult)" placeholder="Résultat">
+						<label>Combien font ({{captcha.op1}} multiplié par {{captcha.op2}}) plus quatre ? </label>
+						<input class="form-control input-sm" opun="captcha.op1" opdeux="captcha.op2" type="text" name="captchaInputResult" ng-model="captcha.inputResult" captcha placeholder="Résultat">
+						<small class="help-block text-danger" ng-show="formSign.captchaInputResult.$invalid && formSign.captchaInputResult.$touched">
+							<span class="glyphicon glyphicon-warning-sign"></span> <strong>Résultat incorrect</strong>
+						</small>
 					</div>
-					<button class="btn btn-block btn-sm btn-warning" ng-disabled="captcha.disabled">Inscription</button>
+					<button class="btn btn-block btn-sm btn-warning" ng-disabled="formSign.$invalid">Inscription</button>
 				</fieldset>
 			</form>
 		</div>

@@ -3,10 +3,10 @@
 		<div class="well bs-component">
 			<form class="form" name="formProfil" novalidate>
 				<fieldset>
-					<legend>Edition du profil 
-					<small class="text-success pull-right" ng-if="formProfil.$valid && formProfil.$pristine">Complet !</small>
-					<small class="text-success pull-right" ng-if="formProfil.$valid && formProfil.$dirty">Complet ! click sur le bouton valider en bas</small>
-					<small class="text-warning pull-right" ng-if="formProfil.$invalid">Votre profil n'est pas encore complet..</small>
+					<legend>Edition du profil <button type="button" ng-click="lire()" class="btn btn-warning"><span class="glyphicon glyphicon-info-sign"></span> A lire absolument</button>
+					<small class="text-success pull-right" ng-if="formProfil.$valid && formProfil.$pristine"><span class="label label-success">Complet !</span></small>
+					<small class="text-success pull-right" ng-if="formProfil.$valid && formProfil.$dirty"><span class="label label-info">Complet ! cliquez sur le bouton valider en bas</span></small>
+					<small class="text-warning pull-right" ng-if="formProfil.$invalid"><span class="label label-danger">Votre profil n'est pas encore complet..</span></small>
 					</legend>
 					<div class="col-lg-6">
 						<div class="form-group">
@@ -14,7 +14,7 @@
 							<input class="form-control input-sm" name="profilEmail" ng-model="profil.email" type="email" required autocomplete="off">
 							<!-- notification -->
 							<small class="help-block"ng-show="formProfil.profilEmail.$invalid && formProfil.profilEmail.$dirty">
-								<span class="glyphicon glyphicon-remove"></span> Adresse mail invalid !
+								<span class="glyphicon glyphicon-remove"></span> Adresse Email invalide !
 							</small>
 						</div>
 						<div class="form-group">
@@ -55,9 +55,11 @@
 									</div>
 								</div>
 							</div>
+						</div>
+						<div class="form-group">
+							<button type="button" ng-click="modalDelete()" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-trash"></span> Se désinscrire de Père Mut'</button>
 						</div>	
 						
-						<button type="button" ng-click="lire()" class="btn btn-lg btn-warning btn-block"><span class="glyphicon glyphicon-info-sign"></span> A lire absolument</button>
 					</div>
 					<div class="col-lg-6">
 						<div class="form-group">
@@ -95,6 +97,9 @@
 							<small class="help-block"ng-show="formProfil.profilVille.$error.required">
 								<span class="glyphicon glyphicon-warning-sign"></span> La ville de résidence doit être renseigné..
 							</small>
+							<small class="help-block" ng-show="formProfil.profilVille.$error.profilVille">
+								<span class="glyphicon glyphicon-warning-sign"></span> Le format de la ville doit être : VILLE (CODEPOSTAL) ..
+							</small>
 						
 						
 						<div class="form-group">
@@ -119,12 +124,21 @@
 
 						<autofill auto-style="form-control" prompt="Choix N° 1 (obligatoire) : Tapez les premières lettres de la ville et selectionnez la dans le menu déroulant" label="Choix de permutation (par ville) 1 choix obligatoire les 2 autres facultatifs" name="profilChoix1" ng-model="profil.destination.choix1" pattern="^[ \w]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.destination.choix1)" required="true"></autofill>
 						<small class="help-block"ng-show="formProfil.profilChoix1.$error.required">
-							<span class="glyphicon glyphicon-warning-sign"></span> Renseigné au moins 1 choix de destination..
+							<span class="glyphicon glyphicon-warning-sign"></span> Renseignez au moins 1 choix de destination..
+						</small>
+						<small class="help-block" ng-show="formProfil.profilChoix1.$error.profilChoix1">
+							<span class="glyphicon glyphicon-warning-sign"></span> Le format de la ville doit être : VILLE (CODEPOSTAL) ..
 						</small>
 						
-						<autofill auto-style="form-control" prompt="Choix N° 2 (facultatif) : Tape les premieres lettres de la ville et selectionne dans le menu déroulant" name="profilChoix2" ng-model="profil.destination.choix2" pattern="^[ \w]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.destination.choix2)"></autofill>
+						<autofill auto-style="form-control" prompt="Choix N° 2 (facultatif) : Tapez les premières lettres de la ville et selectionnez la dans le menu déroulant" name="profilChoix2" ng-model="profil.destination.choix2" pattern="^[ \w]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.destination.choix2)"></autofill>
+						<small class="help-block" ng-show="formProfil.profilChoix2.$error.profilChoix2">
+							<span class="glyphicon glyphicon-warning-sign"></span> Le format de la ville doit être : VILLE (CODEPOSTAL) ..
+						</small>
 
-						<autofill auto-style="form-control" prompt="Choix N° 3 (facultatif) : Tape les premieres lettres de la ville et selectionne dans le menu déroulant" name="profilChoix3" ng-model="profil.destination.choix3" pattern="^[ \w]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.destination.choix3)"></autofill>
+						<autofill auto-style="form-control" prompt="Choix N° 3 (facultatif) : Tapez les premières lettres de la ville et selectionnez la dans le menu déroulant" name="profilChoix3" ng-model="profil.destination.choix3" pattern="^[ \w]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.destination.choix3)"></autofill>
+						<small class="help-block" ng-show="formProfil.profilChoix3.$error.profilChoix3">
+							<span class="glyphicon glyphicon-warning-sign"></span> Le format de la ville doit être : VILLE (CODEPOSTAL) ..
+						</small>
 
 					</div>
 					<div class="form-group">

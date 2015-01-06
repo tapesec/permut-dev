@@ -147,7 +147,7 @@ PermutantCtrl.controller('AboutCtrl', function() {
 
 });
 
-PermutantCtrl.controller('RegisterCtrl', ['$scope','User','$http','Mail', function($scope, User, $http, Mail){
+PermutantCtrl.controller('RegisterCtrl', ['$scope','User','$http','Mail','$location', function($scope, User, $http, Mail, $location){
 
 	//Connexion
 	$scope.login = {};
@@ -160,13 +160,7 @@ PermutantCtrl.controller('RegisterCtrl', ['$scope','User','$http','Mail', functi
 	//Captcha	
 	$scope.captcha = {
 		op1 : Math.floor((Math.random() * 10) + 1),
-		op2 : Math.floor((Math.random() * 10) + 1),
-		disabled : true
-	}
-	$scope.captcha.mustBe = $scope.captcha.op1 * $scope.captcha.op2 + 4;
-			
-	$scope.captchaObserver = function(result){
-		$scope.captcha.disabled = (result != $scope.captcha.mustBe);
+		op2 : Math.floor((Math.random() * 10) + 1)
 	}
 
 	/**
@@ -190,18 +184,22 @@ PermutantCtrl.controller('RegisterCtrl', ['$scope','User','$http','Mail', functi
   	$scope.retrivePassword = function(lost){
   		User.sendNewPassword(lost);
   	}
+
+  	$scope.savoir = function() {
+  		$location.path('/about');
+  	}
  
 }]);
 
-PermutantCtrl.controller('EditionCtrl', ['$scope', '$rootScope', 'User', '$filter','Ville', '$modal', 'RANDOM',
-	function($scope, $rootScope, User, $filter, Ville, $modal, RANDOM){
+PermutantCtrl.controller('EditionCtrl', ['$scope', '$rootScope', 'User','Ville', '$modal', 'RANDOM', '$timeout',
+	function($scope, $rootScope, User, Ville, $modal, RANDOM, $timeout){
 	
 	$scope.profil = User.showProfil();
 	$scope.avatar = {
 		randomparams : RANDOM.generate()
 	}
 	
-	$scope.listGrade = 'Gardien de la Paix, Brigadier, Brigadier Chef, Major, Lieutenant, Capitaine, Commandant'.split(',');
+	$scope.listGrade = 'Gardien de la Paix, Brigadier, Brigadier Chef, Major'.split(',');
 
 	//affichage / masquage des datepickers
 	$scope.open = false;
@@ -236,26 +234,17 @@ PermutantCtrl.controller('EditionCtrl', ['$scope', '$rootScope', 'User', '$filte
 		var modalInstance = $modal.open({
 
 			templateUrl: 'partials/popups/uploader.html',
-			controller: function($scope, $modalInstance) {
-				/*$scope.imageCropResult = null;
-				$scope.showImageCropper = false;
-				*/
-				$scope.send = function() {
-					var datauri = $(".result-datauri").val();
-					$modalInstance.close(datauri);
-				}
-
-				$scope.close = function() {
-					$modalInstance.close();
-				}
-			}
-
+			controller: 'ModalUploadCtrl',
+			size: 'lg'
 	   	});
 
 	   	modalInstance.result.then(function (data) {
       		User.sendAvatar(data).then(function(result) {
-				$scope.profil = User.showProfil();
-				$scope.avatar.randomparams = RANDOM.generate();
+      			$timeout(function() {
+      				$scope.profil = User.showProfil();
+					$scope.avatar.randomparams = RANDOM.generate();
+      			});
+				
 			});	
     	});
 	}
@@ -268,12 +257,75 @@ PermutantCtrl.controller('EditionCtrl', ['$scope', '$rootScope', 'User', '$filte
 	    });
 
 	    function AlireCtrl($scope, $modalInstance) {
-
 	    	$scope.close = function(){
   				$modalInstance.close();
   			}
 	    }
 	};
 
+	$scope.modalDelete = function() {
 
+		var modalInstance = $modal.open({
+			template: 	'<div class="modal-header">'+
+							'<h2 class="modal-title" id="myLargeModelLabel">C\'est le départ ?</h2>'+
+						'</div>'+
+						'<div class="modal-body">'+
+							'<p>Êtes vous sure de vouloir vous désinscrire de père mut ? vous pourrez toujours vous réinscrire par la suite.</p>'+
+							'Si c\'est parce que vous avez trouvé un permutant, félicitation et mission accompli !</p>'+
+							'Sinon, j\'espère que ce n\'est pas suite à une deception venant du site.<br>Dans tous les cas ..</p>'+
+							'.. bon vent ! <i class="fa fa-smile-o"></i>'+
+						'</div>'+
+						'<div class="modal-footer">'+
+							'<button type="button" class="btn btn-danger" ng-click="close()">Annuler</button>'+
+							'<button type="button" class="btn btn-success" ng-click="remove()">Je confirme !</button>'+
+						'</div>',
+			controller: function($scope, $modalInstance, User) {
+				
+				$scope.close = function() {
+					$modalInstance.close();
+				}
+
+				$scope.remove = function(){
+					$modalInstance.close(true);
+				}
+			}
+	   	});
+
+		modalInstance.result.then(function (res) {
+      		if ( res == true) {
+      			User.remove();
+      		}
+    	});
+	}
 }]);
+
+PermutantCtrl.controller('ModalUploadCtrl', function($scope, $modalInstance, $timeout) {
+	$scope.myImage='';
+	$scope.myCroppedImage='';
+	$scope.sendDisabled = true;
+
+	$timeout(function() {
+		angular.element(document.querySelector('#fileInput')).on('change', function(evt) {
+			$scope.sendDisabled = false;
+			var file=evt.currentTarget.files[0];
+			var reader = new FileReader();
+			reader.onload = function (evt) {
+				$scope.$apply(function($scope){
+					$scope.myImage=evt.target.result;
+				});
+			};
+			reader.readAsDataURL(file);
+
+		});
+	}, 1000);
+
+	$scope.send = function() {
+		var datauri = $("#croped-img").attr('src');
+		$modalInstance.close(datauri);
+	}
+
+	$scope.close = function() {
+		$modalInstance.close();
+	}
+	
+});

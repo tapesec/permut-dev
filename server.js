@@ -41,7 +41,7 @@ var transporter = nodemailer.createTransport({
 	},
 	auth: {
 		user: 'lionel.dupouy@gmail.com',
-		pass: 'thepassword'
+		pass: 'J1Z8K0G6C1G8N6'
 	}
 });
 
@@ -199,7 +199,7 @@ app.post('/login', function(req, res){
 					console.log(user);
 					res.status(200).send({ code: 'response:login-success', content: beforeRender(user) });
 				}else{
-					res.status(204).send({ code: 'response:user-not-found' });
+					res.status(200).send({ code: 'response:user-not-found' });
 				}
 			}
 		});
@@ -227,10 +227,12 @@ app.get('/logout', [sessionCheck], function(req, res){
 * Mise à jour du profil utilisateur
 **/
 app.post('/updateUser', [sessionCheck], function(req, res){
+	console.log(req.body);
 	if (!isValid(pattern_validator.updateUser, req.body)) {
 		res.status(400).send('Bad Request');
 	} else {
 		var userData = beforeRegister(req.body);
+		console.log(userData);
 		var query = Permutant.findOneAndUpdate({_id: req.session.userAuthenticated._id}, userData);
 		query.exec(function(error, user){
 			var beforeRenderUser = beforeRender(user);
@@ -239,7 +241,7 @@ app.post('/updateUser', [sessionCheck], function(req, res){
 				var message = "error:db-update";
 				res.status(500);
 			}else{
-				console.log('Utilisateur: '+userData.name+' bien mis à jour !');
+				console.log('Utilisateur: '+userData.ready+' bien mis à jour !');
 				var message = "response:update-user-success";
 				res.status(200);
 			}
@@ -302,13 +304,48 @@ app.post('/addUser', function(req, res){
 	}//endif
 });//end app.post
 
+app.get('/removeUser', [sessionCheck], function(req, res){
+	console.log(req.session.userAuthenticated);
+	var query = Permutant.findOne();
+	query.where({name: req.session.userAuthenticated.name});
+	query.exec(function(err, user) {
+		console.log(user, 'user ligne 312');
+		Permutant.remove({name: user.name}, function(err) {
+			if(err){
+			  	console.error(err, 'Erreur de suppression');
+			  	res.status(500).send({ code: 'error:db-remove' });
+			}
+			if( user.avatar != '/img/permut-nobody.svg') {
+				fs.exists(__dirname + user.avatar, function(exist) {
+					if ( exist ) {
+						fs.unlink(__dirname + user.avatar, function (err) {
+							if(err) {
+								console.log(err);
+								res.status(500).send({ code: 'error:db-remove' });
+							}
+							res.status(200).send({ code: 'response:delete-success' });
+							console.log('successfully deleted');
+						});
+					} else {
+						console.error(err, 'Le chemin n\'existe pas');
+				  		res.status(500).send({ code: 'error:db-remove' });
+					}
+				});
+			} else {
+				res.status(200).send({ code: 'response:delete-success' });
+				console.log('successfully deleted');
+			}
+		});
+	});
+});
 
 /**
 * Sauvegarde l'avatar de l'utilisateur en base de données
 * @TODO proteger l'upload
 **/
-app.post('/avatar', function(req, res){
-	
+app.post('/avatar', [sessionCheck], function(req, res){
+	console.log(req.body.img);
+
 	var imgData = req.body.img,
 	base64Data = imgData.replace(/^data:image\/png;base64,/,""),
   	binaryData = new Buffer(base64Data, 'base64').toString('binary'); 
@@ -637,12 +674,11 @@ var permutantlvl2 = [], permutantlvl3 = [];
 	* ou tous ses utilisateurs souhaitent aller
 	**/
 	function setBipartite(users){
-		
+		console.log(users, 'liste des utilisateurs en poste là ou veux aller le visiteur');
 		var deferred = Q.defer();
 		if(!users || users.length == 0) {
 			deferred.resolve(null);
 		} else {
-			console.log('bi partite');
 			var residencePossibility = [];
 			for(user in users) {
 				if(users[user].destination.choix1 == client.residence ||
@@ -692,7 +728,7 @@ var permutantlvl2 = [], permutantlvl3 = [];
 	* Récupère la liste des utilisateurs qui sont en poste à un des lieu passés en paramètre
 	**/
 	function secondRound(residencePossibility) {
-		//console.log(residencePossibility,'residence possibility secondRound');
+		console.log(residencePossibility,'possibilité de recherche d\'utilisateur du second tour');
 		var query;
 		var deferred = Q.defer();
 
@@ -712,7 +748,7 @@ var permutantlvl2 = [], permutantlvl3 = [];
 	* ou tous ses utilisateurs souhaitent aller.
 	**/
 	function setTripartite(users) {
-		
+		console.log(users, 'hydrate la liste des utilisateurs qui peuvent permuter avec le visiteur en triipartite et retourne la liste des résidence où tous ses utilisateurs souhaitent aller.');
 		var deferred = Q.defer();
 		if(!users || users.length == 0) {
 			deferred.resolve(null);
@@ -802,7 +838,7 @@ var permutantlvl2 = [], permutantlvl3 = [];
 	* Récupère la liste des utilisateurs qui sont en poste à un des lieu passés en paramètre
 	**/
 	function thirdRound(residencePossibility) {
-		
+		console.log(residencePossibility, 'thirdround');
 		var query;
 		var deferred = Q.defer();
 		if(residencePossibility == null || residencePossibility.length == 0) {
@@ -824,15 +860,19 @@ var permutantlvl2 = [], permutantlvl3 = [];
 	* ou tous ses utilisateurs souhaitent aller.
 	**/
 	function setQuadrapartite(users){
-		//console.log(users, 'quadrapartite');
+		console.log(users, 'setQuadrapartite');
+		console.log(client, 'client');
+		console.log(permutantlvl2, 'lvl2'); console.log(permutantlvl3, 'lvl3');
+		console.log(users, 'users');
+
 		var deferred = Q.defer();
 		if(!users || users.length == 0) {
 			deferred.resolve(null);
 		} else {		
-			var residencePossibility = [];
+			//var residencePossibility = []; uniquement si on veut faire plus de quadra partite
 			for(user in users){
 				if(users[user].destination.choix1 == client.residence ||
-					users[user].destination.choix3 == client.residence ||
+					users[user].destination.choix2 == client.residence ||
 					users[user].destination.choix3 == client.residence)
 				{
 					//console.log(users, 'match');
@@ -842,6 +882,7 @@ var permutantlvl2 = [], permutantlvl3 = [];
 							permutantlvl3[perm].destination.choix2 == users[user].residence ||
 							permutantlvl3[perm].destination.choix3 == users[user].residence)
 						{
+							console.log('OKKKKKKKKKKKKKKKK');
 							//console.log(users, 'multiplepos2');
 							var multiplepos2 = [];
 							for(pperm in permutantlvl2){
@@ -859,8 +900,8 @@ var permutantlvl2 = [], permutantlvl3 = [];
 										description: permutantlvl2[pperm].description,
 										dateAdmin: permutantlvl2[pperm].dateAdmin,
 										dateGrade: permutantlvl2[pperm].dateGrade,
-										avatar: permutantlvl2[perm].avatar,
-										grade: permutantlvl2[perm].grade
+										avatar: permutantlvl2[pperm].avatar,
+										grade: permutantlvl2[pperm].grade
 									});
 								}
 							}
@@ -869,10 +910,10 @@ var permutantlvl2 = [], permutantlvl3 = [];
 								residence : permutantlvl3[perm].residence,
 								destination : permutantlvl3[perm].destination,
 								mail: permutantlvl3[perm].email,
-								service: permutantlvl3[pperm].service,
-								description: permutantlvl3[pperm].description,
-								dateAdmin: permutantlvl3[pperm].dateAdmin,
-								dateGrade: permutantlvl3[pperm].dateGrade,
+								service: permutantlvl3[perm].service,
+								description: permutantlvl3[perm].description,
+								dateAdmin: permutantlvl3[perm].dateAdmin,
+								dateGrade: permutantlvl3[perm].dateGrade,
 								avatar: permutantlvl3[perm].avatar,
 								grade: permutantlvl3[perm].grade
 							});
@@ -880,7 +921,7 @@ var permutantlvl2 = [], permutantlvl3 = [];
 					}
 					combinaison.quadrapartite.push({
 						pos1: {
-							login : client.name,
+							login : 'Vous',
 							residence : client.residence,
 							destination : client.destination,
 							mail: client.email,
@@ -906,7 +947,7 @@ var permutantlvl2 = [], permutantlvl3 = [];
 							grade: users[user].grade
 						},
 						pos5: {
-							login : client.name,
+							login : 'Vous',
 							residence : client.residence,
 							destination : client.destination,
 							mail: client.email,
@@ -932,7 +973,7 @@ var permutantlvl2 = [], permutantlvl3 = [];
 	.then(thirdRound)
 	.then(setQuadrapartite)
 	.then(function(users, error){
-			console.log(users, 'users finals');
+			console.log(permutantlvl2, 'lvl2'); console.log(permutantlvl3, 'lvl3');
 			console.log(combinaison, 'combo');
 			if(combinaison.bipartite.length == 0 && combinaison.tripartite.length == 0 && combinaison.quadrapartite.length == 0) {
 				res.status(200).send('no match');

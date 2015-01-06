@@ -9,7 +9,7 @@ var Permutator = angular.module('myApp', [
   'myApp.directives',
   'myApp.controllers',
   'ui.bootstrap',
-  'ImageCropper'
+  'ngImgCrop'
   ]);
 
 Permutator.config(['$routeProvider', 'USER_STATUS', '$httpProvider', function($routeProvider, USER_STATUS, $httpProvider) {

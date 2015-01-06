@@ -2,15 +2,22 @@
 	<h2 class="modal-title" id="myLargeModelLabel">Recadrez votre avatar</h2>
 </div><!-- modal-header -->
 <div class="modal-body" id="uploaderModal">
-	<image-crop data-width="200" data-height="200" data-shape="square" data-step="imageCropStep" data-result="imageCropResult" ng-show="showImageCropper"></image-crop>
-	<h3>Resultat</h3>
-    <div ng-show="imageCropResult"> <img ng-src="{{ imageCropResult }}" alt="The Cropped Image">
-    	<textarea id="croparea" class="result-datauri">{{ imageCropResult }}</textarea>
-    </div>
-    <p ng-hide="imageCropResult">Pas encore découpé</p>
-
+	<div class="row">
+		<div class="col-lg-12">
+			<div><h3>Selectionnez une image:</h3> <input type="file" id="fileInput" /></div>
+		</div>
+		<div class="col-lg-12">
+			<div class="cropArea">
+				<img-crop image="myImage" result-image="myCroppedImage"></img-crop>
+			</div>
+		</div>
+		<div class="col-lg-12">
+			<div><h3>Image retaillée:</h3></div>
+			<div><img id="croped-img" ng-src="{{myCroppedImage}}" /></div>
+		</div>
+	</div>
 </div><!-- fin modal body -->
-<div class="modal-footer">
-	<button type="button" class="btn btn-info" ng-click="send()">Uploader !</button>
-	<button type="button" class="btn btn-info" ng-click="close()">Fermer</button>
+<div class="modal-footer" style="clear:both;">
+	<button type="button" class="btn btn-info" ng-disabled="sendDisabled" ng-click="send()">Uploader !</button>
+	<button type="button" class="btn btn-info" ng-click="close()">Annuler</button>
 </div><!-- modal-footer -->

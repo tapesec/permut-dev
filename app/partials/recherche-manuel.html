@@ -1,5 +1,5 @@
 <div class="no-marge bg-man-search">
-	<div class="row">
+	<div class="row" id="manual-search-area">
 		<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 well bs-component">
 				<form class="form-inline">
 					<div class="form-group col-lg-8">
@@ -16,7 +16,7 @@
 				</form>
 		</div>
 	</div>
-	<div class="row">
+	<div class="row" style="margin-top:110px;">
 		<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 bs-component">
 			<span ng-if="!users">Selectionnez dans le menu déroulant de gauche un critère de recherche..</span>
 			<div class="panel panel-success" ng-repeat="user in users">
@@ -24,7 +24,7 @@
 				<div class="panel-body">
 					<div class="media">
 						<a class="pull-left">
-							<img width="80" height="80" class="img-circle img-responsive" src="{{user.avatar}}" alt="Image de l'avatar par défaut">
+							<img width="80" height="80" class="img-circle img-responsive" ng-src="{{user.avatar}}" alt="Image de l'avatar par défaut">
 						</a>
 						<div class="media-body">
 							<p>Souhaite aller à <span class="label label-info">{{user.destination.choix1}} {{user.destination.choix2}} {{user.destination.choix3}}</span></p>
