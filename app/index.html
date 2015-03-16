@@ -25,59 +25,73 @@
 </head>
 <body>
 <!--[if lt IE 10]>
-      <div class="container>
-        <div class="row">
-          <div class="col-lg-8 col-lg-offset-2" style="margin-top:40px;">
-            <div class="alert alert-warning">
-              <p class="">Vous utilisez une version de navigateur <strong>trop ancienne</strong>. S'il vous plaît, <a href="http://browsehappy.com/">mettez à jour votre navigateur</a> pour rendre visite au père mut'. A tout de suite ;).</p>
-            </div>
-          </div>
-        </div>
-      </div>
+	  <div class="container>
+		<div class="row">
+		  <div class="col-lg-8 col-lg-offset-2" style="margin-top:40px;">
+			<div class="alert alert-warning">
+			  <p class="">Vous utilisez une version de navigateur <strong>trop ancienne</strong>. S'il vous plaît, <a href="http://browsehappy.com/">mettez à jour votre navigateur</a> pour rendre visite au père mut'. A tout de suite ;).</p>
+			</div>
+		  </div>
+		</div>
+	  </div>
   <![endif]-->
 <!--[if gte IE 10]><!-->
   <!-- Animation de chargement -->
   <div ng-controller="LoaderCtrl">
-    <div class="bg-loader" ng-if="loader">
-      <div class="bubblingG">
-        <h2 class="title">Chargement</h2>
-        <span id="bubblingG_1"></span>
-        <span id="bubblingG_2"></span>
-        <span id="bubblingG_3"></span>
-      </div>
-    </div>
+	<div class="bg-loader" ng-if="loader">
+	  <div class="bubblingG">
+		<h2 class="title">Chargement</h2>
+		<span id="bubblingG_1"></span>
+		<span id="bubblingG_2"></span>
+		<span id="bubblingG_3"></span>
+	  </div>
+	</div>
   </div>
   <!-- Fin animation -->
   <!-- Navigation horizontale -->
   <nav class="navbar navbar-default navbar-static-top title-main-nav navbar-fixed-top" role="navigation" ng-controller="NavBarCtrl">
-    <div class="logo-permut" ng-click="goHome()"></div>
-      <div class="navbar-header navbar-decal">
-        <a class="navbar-brand logo-title" href="#/index">
-          Père Mut'
-        </a>
-      </div>
-      <div class="container-fluid">
-        <ul class="nav navbar-nav">
-          <li><a><i class="fa fa-users"></i> {{nbUser}} permutants potentiels vous attendent !</a></li>
-          <li ng-if="rechercheAuto"><a href="#/index"><i class="fa fa-cogs"></i> Recherche automatique</a></li>
-          <li ng-if="rechercheMan"><a href="#/manuel"><span class="glyphicon glyphicon-wrench"></span> Recherche manuelle</a></li>
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="#/about"><span class="glyphicon glyphicon-question-sign"></span> A propos</a></li>
-          <li ng-if="connexion"><a href="#/login"><span class="glyphicon glyphicon-log-in"></span> Connexion</a></li>
-          <li ng-if="profil"><a href="#/edition-profil"><span class="glyphicon glyphicon-user"></span> Mon profil</a></li>
-          <li ng-if="deconnexion" class="cursor"><a ng-click="logout()"><span title="déconnexion" class="glyphicon glyphicon-off"></a></li>
-        </ul>
-      </div>
+	<div class="logo-permut" ng-click="goHome()"></div>
+	  <div class="navbar-header navbar-decal">
+		  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+			<span class="sr-only">Toggle navigation</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </button>
+			<a class="navbar-brand" href="#/index">
+			  <span class="logo-title hidden-xs">Père Mut'</span>
+			</a>
+	  </div>
+	  <div class="container-fluid">
+		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		  <ul class="nav navbar-nav">
+			<li ng-if="rechercheAuto"><a href="#/index"><i class="fa fa-cogs"></i> <span class="hidden-sm">Recherche automatique</span></a></li>
+			<li ng-if="rechercheMan"><a href="#/manuel"><span class="glyphicon glyphicon-wrench"></span> <span class="hidden-sm"> Recherche manuelle</span></a></li>
+		  </ul>
+		  <ul class="nav navbar-nav navbar-right">
+			<li><a href="#/about"><span class="glyphicon glyphicon-question-sign"></span> <span class="hidden-sm">A propos</span></a></li>
+			<li ng-if="connexion"><a href="#/login"><span class="glyphicon glyphicon-log-in"></span> Connexion</a></li>
+			<li ng-if="profil"><a href="#/edition-profil"><span class="glyphicon glyphicon-user"></span> Mon profil</a></li>
+			<li ng-if="deconnexion" class="cursor"><a ng-click="logout()"><span title="déconnexion" class="glyphicon glyphicon-off"></span><span class="visible-xs-inline"> Déconnexion</span></a></li>
+		  </ul>
+		</div>
+	  </div>
   </nav>
   <!-- Fin navigation -->
 
   <div ng-controller="AppCtrl" style="height:100%;" class="no-marge">
-    <div class="container-fluid navbar-fixed-adjust" style="height:100%;" ng-view >
-      
-    </div>
+	<div class="container-fluid navbar-fixed-adjust" style="height:100%;" ng-view >
+	  <!-- views inside -->
+	</div>
+	<div class="clearfix"></div>
+  <footer class="footer bg-info col-lg-12 visible-lg">
+	  <div class="col-lg-8 col-lg-offset-3">
+		<p class="text-footer text-align">
+			Suivez nous sur <span class="label label-primary"><a href="https://www.facebook.com/pages/P%C3%A8re-mut/1604753573087681"><i class="fa fa-facebook"></i>acebook</a></span> & <span class="label label-primary"><a href="https://twitter.com/PereMut"><i class="fa fa-twitter"></i> tweeter</a></span>
+		</p>
+	  </div>
+  </footer>
   </div>
-  
 
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>

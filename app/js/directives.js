@@ -27,11 +27,13 @@ PermutantDirectives.directive('autofill', function(){
 			listeville: "=",
 			inputname: "@name",
 			style: "@autoStyle",
-			pattern: "@"
+			pattern: "@",
+			load: "="
 		},
 		require: 'ngModel',
 		link:function(scope, elem, attrs, ctrl){
 			elem.children("div").children("ul").css('display', 'none');
+
 			scope.$watch('item', function(nVal) {
 				
 				if(nVal)
@@ -55,6 +57,10 @@ PermutantDirectives.directive('autofill', function(){
 					scope.listeVilles = [];
 					scope.listeVilles = nVal;
 				});
+			});
+
+			scope.$watch('load', function(nVal) {
+				scope.showLoader = nVal;
 			});
 
 			scope.selected = function(viewValue){
@@ -136,11 +142,25 @@ PermutantDirectives.directive('multipleType', function(){
 
 	return {
 		restrict: 'A',
-		scope: {
-			select: "="
-		},
+		
 		link: function(scope, elem, attrs, ctrl){
-			scope.$watch('select', function(nval){
+			
+			scope.$watch(attrs.select, function(nval){
+
+				switch(nval) {
+					case 'residence':
+					scope.input.myplaceholder = "Résidence";
+					break;
+					case 'destination':
+					scope.input.myplaceholder = "Destination";
+					break;
+					case 'grade':
+					scope.input.myplaceholder = "Grade";
+					break;
+					default:
+					scope.input.myplaceholder = "Tapez votre recherche ici";
+				}
+
 				if(nval != "pasDeCritere"){
 					$(elem).attr('disabled', false);
 				}

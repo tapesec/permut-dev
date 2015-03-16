@@ -50,9 +50,11 @@ PermutantServices.factory('CheckAccess',['$rootScope', 'User', '$route', '$q',
 /**
 *Service relatif à la création et à l'affichage des utilistaeurs du site
 **/
-PermutantServices.factory('User',['$http', '$location', 'localStorageService','$filter', function($http, $location, LocalStorageService, $filter){
+PermutantServices.factory('User',['$http', '$location', 'localStorageService','$filter', '$q', function($http, $location, LocalStorageService, $filter, $q){
 
 	return {
+
+		number: "",
 
 		save : function(userData){
 
@@ -118,10 +120,10 @@ PermutantServices.factory('User',['$http', '$location', 'localStorageService','$
 			return $http.get('/getPassword/'+password);
 		},
 		countAll: function(){
-			return $http.get('/countUser')
-				.success(function(){}, function(error){
-					console.error('Requete impossible vers le serveur veuillez réessayer');
-				});
+			var that = this;
+			var deferred = $q.defer();
+			return $http.get('/countUser');
+				
 		},
 		sendNewPassword: function(lost){
 			$http.post('/retrievePassword', lost)
@@ -208,31 +210,70 @@ PermutantServices.factory('Show', ['User', function(User){
 	};
 }]);
 
- PermutantServices.factory('HttpInterceptor', ['$location', 'ResponseInterpreter','$rootScope', function($location, ResponseInterpreter, $rootScope) {
+PermutantServices.factory('UrlGenerateLoader', function($rootScope) {
+	
+	var currentRequestsCount = 0;
+	
+	return {
+
+		parse: function(url) {
+			var locationSplited = url.split('/');
+			var location = locationSplited[1];
+			return location;
+		},
+
+		callLoader: function(url) {
+			var location = this.parse(url);
+			currentRequestsCount++;
+			switch(location) {
+				case 'getVilles':
+				$rootScope.$broadcast('typeahead:show');
+				break;
+				default:
+				$rootScope.$broadcast('loader:show');
+			}
+		},
+
+		revoqueLoader: function(url) {
+			var location = this.parse(url);
+			var count = --currentRequestsCount;
+			console.log(location);
+			switch(location) {
+				case 'getVilles':
+				if (count === 0) {
+                	$rootScope.$broadcast('typeahead:hide');
+            	}
+				break;
+				default:
+				console.log(count);
+				if (count === 0) {
+                	$rootScope.$broadcast('loader:hide');
+            	}
+			}
+		}
+	}
+});
+
+ PermutantServices.factory('HttpInterceptor', ['$location', 'ResponseInterpreter','$rootScope','UrlGenerateLoader', function($location, ResponseInterpreter, $rootScope, UrlGenerateLoader) {
     
  	var currentRequestsCount = 0;
     return {
 
     	request: function(config) {
-            currentRequestsCount++;
-            $rootScope.$broadcast('loader:show');
-            return config || $q.when(config)
+    		UrlGenerateLoader.callLoader(config.url);
+	        return config || $q.when(config);
         },
 
     	response: function(response){
-    		if ((--currentRequestsCount) === 0) {
-                $rootScope.$broadcast('loader:hide');
-            }
-            //console.log(response, 'http interceptor response');
+    		console.log(response);
+    		UrlGenerateLoader.revoqueLoader(response.config.url);
             ResponseInterpreter.translate(response.data.code);
             return response || $q.when(response);
     	},
       	
     	responseError: function(rejection) {
-    		console.log(rejection, 'http interceptor responseError');
-    		if ((--currentRequestsCount) === 0) {
-                $rootScope.$broadcast('loader:hide');
-            }
+    		console.log(rejection);
+    		UrlGenerateLoader.revoqueLoader(rejection.config.url);
 	        ResponseInterpreter.translate(rejection.data.code);
 	        return rejection || $q.when(rejection);
       	}

@@ -1,6 +1,6 @@
 <div class="no-marge bg-man-search">
 	<div class="row" id="manual-search-area">
-		<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 well bs-component">
+		<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-xs-12 well bs-component">
 				<form class="form-inline">
 					<div class="form-group col-lg-8">
 							<select class="form-control" ng-model="type">
@@ -11,23 +11,29 @@
 							</select>
 					</div>
 					<div class="form-group col-lg-4">					
-						<input ng-change="search(type, val)" disabled="true" multiple-type select="type" class="form-control" type="text" ng-model="val" placeholder="Tapez votre recherche ici">
+						<input ng-change="search(type, val)" disabled="true" multiple-type select="type" class="form-control" type="text" ng-model="val" placeholder="{{input.myplaceholder}}">
 					</div>			
 				</form>
 		</div>
 	</div>
-	<div class="row" style="margin-top:110px;">
-		<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 bs-component">
-			<span ng-if="!users">Selectionnez dans le menu déroulant de gauche un critère de recherche..</span>
+	<div class="row">
+		<div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 bs-component col-xs-12">
+			<span ng-if="!users" class="col-xs-12"><i class="fa fa-users"></i> {{nbUser}} permutants vous attendent !<br>Selectionnez dans le menu déroulant de gauche un critère de recherche..</span>
 			<div class="panel panel-success" ng-repeat="user in users">
-				<div class="panel-heading"> <span class="text-capitalize">{{user.name}} ({{user.grade}}) </span><span class="label label-warning">en poste à {{user.residence}}</span><div class="pull-right">joignable à <span class="glyphicon glyphicon-envelope"></span> {{user.email}}</div></div>
+				<div class="panel-heading"> <span class="text-capitalize hidden-xs">{{user.name}} ({{user.grade}}) </span><span class="label label-warning"><span class="hidden-xs">en poste à</span><span class="glyphicon glyphicon-map-marker"></span> {{user.residence}}</span><div class="pull-right hidden-xs"><span class="glyphicon glyphicon-envelope"></span> {{user.email}}</div></div>
 				<div class="panel-body">
 					<div class="media">
-						<a class="pull-left">
+						<a class="pull-left hidden-xs">
 							<img width="80" height="80" class="img-circle img-responsive" ng-src="{{user.avatar}}" alt="Image de l'avatar par défaut">
 						</a>
 						<div class="media-body">
-							<p>Souhaite aller à <span class="label label-info">{{user.destination.choix1}} {{user.destination.choix2}} {{user.destination.choix3}}</span></p>
+							<p class="visible-xs">
+							<small><span class="glyphicon glyphicon-user"></span> {{user.name}}</small><br>
+							<small><span class="glyphicon glyphicon-envelope"></span> {{user.email}}</small>
+							<br>
+							<small>{{user.grade}}</small>
+							</p>
+							<p>Souhaite aller à <span class="label label-info"><span class="glyphicon glyphicon-map-marker"></span>{{user.destination.choix1}}</span> <span ng-if="user.destination.choix2" class="label label-info"><span class="glyphicon glyphicon-map-marker"></span> {{user.destination.choix2}}</span> <span class="label label-info" ng-if="user.destination.choix3"><span class="glyphicon glyphicon-map-marker"></span>{{user.destination.choix3}}</span></p>
 							<p><strong>Poste actuel :</strong> {{user.service}}</p>
 							<p><strong>Description:</strong></p>
 							<p>{{user.description}}</p>
@@ -35,8 +41,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
-			
+			</div>		
 		</div>
 
 	</div>

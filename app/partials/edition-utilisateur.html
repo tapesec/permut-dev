@@ -77,7 +77,7 @@
 						</div>
 
 						<div class="form-group">
-							<label>Date entrée dans l'administration (hors ADS ou PA) :</label>
+							<label>Date d'entrée dans l'administration (hors ADS ou PA) :</label>
 							<input class="form-control input-sm" type="text" name="profilDateEntree" ng-model="profil.dateEntree"
 							datepicker-popup="dd.MM.yyyy" is-open="open" ng-click="open = !open" placeholder="click pour ouvrir le calendrier" required autocomplete="off">
 							<small class="help-block"ng-show="formProfil.profilDateEntree.$error.required">
@@ -93,12 +93,12 @@
 							</small>
 						</div>
 					
-							<autofill auto-style="form-control input-sm" prompt="Tape les premieres lettres de la ville et selectionne dans le menu déroulant" label="Ville de résidence" name="profilVille" ng-model="profil.ville" pattern="^[ \w]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.ville)" required="true"></autofill>
+							<autofill auto-style="form-control input-sm" prompt="Tape les premieres lettres de la ville et selectionne dans le menu déroulant" label="Lieu du poste occupé actuellement" name="profilVille" ng-model="profil.ville" pattern="^[ \w'áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.ville)" load="loader.typeahead" required="true"></autofill>
 							<small class="help-block"ng-show="formProfil.profilVille.$error.required">
 								<span class="glyphicon glyphicon-warning-sign"></span> La ville de résidence doit être renseigné..
 							</small>
 							<small class="help-block" ng-show="formProfil.profilVille.$error.profilVille">
-								<span class="glyphicon glyphicon-warning-sign"></span> Le format de la ville doit être : VILLE (CODEPOSTAL) ..
+								<span class="glyphicon glyphicon-warning-sign"></span> Le format de la ville doit être : Ville (CODEPOSTAL) ..
 							</small>
 						
 						
@@ -122,27 +122,27 @@
 					<legend>Choix de la permutation : <small>indiquez une ville</small></legend>
 					<div class="form-group">
 
-						<autofill auto-style="form-control" prompt="Choix N° 1 (obligatoire) : Tapez les premières lettres de la ville et selectionnez la dans le menu déroulant" label="Choix de permutation (par ville) 1 choix obligatoire les 2 autres facultatifs" name="profilChoix1" ng-model="profil.destination.choix1" pattern="^[ \w]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.destination.choix1)" required="true"></autofill>
+						<autofill auto-style="form-control" prompt="Choix N° 1 (obligatoire) : Tapez les premières lettres de la ville et selectionnez la dans le menu déroulant" label="Choix de permutation (par ville) 1 choix obligatoire les 2 autres facultatifs" name="profilChoix1" ng-model="profil.destination.choix1" load="loader.typeahead" pattern="^[ \w'áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.destination.choix1)" required="true"></autofill>
 						<small class="help-block"ng-show="formProfil.profilChoix1.$error.required">
 							<span class="glyphicon glyphicon-warning-sign"></span> Renseignez au moins 1 choix de destination..
 						</small>
 						<small class="help-block" ng-show="formProfil.profilChoix1.$error.profilChoix1">
-							<span class="glyphicon glyphicon-warning-sign"></span> Le format de la ville doit être : VILLE (CODEPOSTAL) ..
+							<span class="glyphicon glyphicon-warning-sign"></span> Le format de la ville doit être : Ville (CODEPOSTAL) ..
 						</small>
 						
-						<autofill auto-style="form-control" prompt="Choix N° 2 (facultatif) : Tapez les premières lettres de la ville et selectionnez la dans le menu déroulant" name="profilChoix2" ng-model="profil.destination.choix2" pattern="^[ \w]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.destination.choix2)"></autofill>
+						<autofill auto-style="form-control" prompt="Choix N° 2 (facultatif) : Tapez les premières lettres de la ville et selectionnez la dans le menu déroulant" name="profilChoix2" ng-model="profil.destination.choix2" pattern="^[ \w'áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2,}(\()[\d]{5}(\))$" load="loader.typeahead" listeville="liste" action="search(profil.destination.choix2)"></autofill>
 						<small class="help-block" ng-show="formProfil.profilChoix2.$error.profilChoix2">
-							<span class="glyphicon glyphicon-warning-sign"></span> Le format de la ville doit être : VILLE (CODEPOSTAL) ..
+							<span class="glyphicon glyphicon-warning-sign"></span> Le format de la ville doit être : Ville (CODEPOSTAL) ..
 						</small>
 
-						<autofill auto-style="form-control" prompt="Choix N° 3 (facultatif) : Tapez les premières lettres de la ville et selectionnez la dans le menu déroulant" name="profilChoix3" ng-model="profil.destination.choix3" pattern="^[ \w]{2,}(\()[\d]{5}(\))$" listeville="liste" action="search(profil.destination.choix3)"></autofill>
+						<autofill auto-style="form-control" prompt="Choix N° 3 (facultatif) : Tapez les premières lettres de la ville et selectionnez la dans le menu déroulant" name="profilChoix3" ng-model="profil.destination.choix3" pattern="^[ \w'áàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ-]{2,}(\()[\d]{5}(\))$" load="loader.typeahead" listeville="liste" action="search(profil.destination.choix3)"></autofill>
 						<small class="help-block" ng-show="formProfil.profilChoix3.$error.profilChoix3">
-							<span class="glyphicon glyphicon-warning-sign"></span> Le format de la ville doit être : VILLE (CODEPOSTAL) ..
+							<span class="glyphicon glyphicon-warning-sign"></span> Le format de la ville doit être : Ville (CODEPOSTAL) ..
 						</small>
 
 					</div>
 					<div class="form-group">
-						<button type="button" ng-click="update($scope.profil)" class="btn btn-block btn-success" ng-disabled="formProfil.$invalid || formProfil.$pristine">Valider mon profil</button>	
+						<button type="button" ng-click="update($scope.profil)" class="btn btn-info btn btn-lg center-block" ng-disabled="formProfil.$invalid || formProfil.$pristine"><span class="glyphicon glyphicon-ok"></span> Je valide mon profil !</button>	
 					</div>
 				</fieldset>
 			</form>

@@ -3,6 +3,7 @@
 <!--<pre>{{match | json}}</pre>-->
 	<div class="col-lg-12" ng-if="!match && user.ready == true">
 		<div class="col-lg-4 col-lg-offset-4">
+			<h3 class="logo-title"><i class="fa fa-users"></i> {{nbUser}} permutants attendent!</h3>
 			<button ng-click="searchAboutPermutation()" ng-disabled="!user.ready || !user.cycleAvailable" class="btn btn-lg btn-success btn-block"><span class="glyphicon glyphicon-search"></span> Cherchez un permutant !</button>
 		</div>
 	</div>

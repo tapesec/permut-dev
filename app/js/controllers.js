@@ -4,9 +4,12 @@
 
 var PermutantCtrl = angular.module('myApp.controllers', []);
 
-PermutantCtrl.controller('IndexCtrl', ['$rootScope', '$scope', 'User','Permutation', '$modal', function($rootScope, $scope, User, Permutation, $modal) {
+PermutantCtrl.controller('IndexCtrl', ['$rootScope', '$scope', 'User','Permutation', '$modal', 'Count', function($rootScope, $scope, User, Permutation, $modal, Count) {
 
 	$scope.user = User.showProfil();
+
+	$scope.nbUser = Count.data.content;
+	
 
 	Permutation.cycleIsAvailable().then(function(res){
 		$scope.user.cycleAvailable = res.data.content;
@@ -58,9 +61,13 @@ PermutantCtrl.controller('IndexCtrl', ['$rootScope', '$scope', 'User','Permutati
 }]);
 
 
-PermutantCtrl.controller('ManualCtrl', ['$scope', 'User', function($scope, User) {
+PermutantCtrl.controller('ManualCtrl', ['$scope', 'User', 'Count', function($scope, User, Count) {
 
 	$scope.type = "pasDeCritere";
+	$scope.input = {
+		myplaceholder: "Tapez votre recherche ici"
+	};
+	$scope.nbUser = Count.data.content;
 
 	$scope.search = function(type, val){
 		User.showBy(type, val).then(function(response){
@@ -77,14 +84,12 @@ PermutantCtrl.controller('ManualCtrl', ['$scope', 'User', function($scope, User)
 PermutantCtrl.controller('NavBarCtrl', ['$scope','User','Show',  '$location', NavBarCtrl]);
 
 	function NavBarCtrl($scope, User, Show, $location){
-		
+				
 		/**
 		*Rafraichissement de l'état de la navigation horizontale à chaque changement de vue
 		**/
 		$scope.$on('$routeChangeSuccess', function(event, curr, prev){
-			$scope.nbUser = User.countAll().then(function(nb){
-				$scope.nbUser = nb.data.content;
-			});
+			$scope.nbUser = User.number;
 			$scope.connexion = Show.isVisible('connexion');
 			$scope.profil = Show.isVisible('profil');
 			$scope.deconnexion = Show.isVisible('deconnexion');
@@ -121,9 +126,9 @@ PermutantCtrl.controller('LoaderCtrl', ['$scope', LoaderCtrl]);
 	}
 
 
-PermutantCtrl.controller('AppCtrl', ['$rootScope', '$location', AppCtrl]);
+PermutantCtrl.controller('AppCtrl', ['$rootScope', '$location','$scope', AppCtrl]);
 
-	function AppCtrl($rootScope, $location){
+	function AppCtrl($rootScope, $location, $scope){
 
 		$rootScope.$on('$routeChangeError', function(event, curr, prev, rejected){	
 			switch(rejected){
@@ -140,6 +145,18 @@ PermutantCtrl.controller('AppCtrl', ['$rootScope', '$location', AppCtrl]);
 			}
 			
 		});
+		$scope.loader = {
+			typeahead : false
+		}
+		$scope.$on('typeahead:hide', function(){
+			$scope.loader.typeahead = false;
+			console.log('false');
+		});
+		$scope.$on('typeahead:show', function(){
+			$scope.loader.typeahead = true;
+			console.log('true');
+		});
+
 	}
 
 PermutantCtrl.controller('AboutCtrl', function() {
@@ -174,12 +191,12 @@ PermutantCtrl.controller('RegisterCtrl', ['$scope','User','$http','Mail','$locat
 		User.login($scope.login);
 	}
 
-	$scope.saveVille = function(){
+	/*$scope.saveVille = function(){
   		$http.get('/splitAndSaveVille')
   			.success(function(res){
   				console.log(res);
   			});
-  	}
+  	}*/
 
   	$scope.retrivePassword = function(lost){
   		User.sendNewPassword(lost);
@@ -198,8 +215,9 @@ PermutantCtrl.controller('EditionCtrl', ['$scope', '$rootScope', 'User','Ville',
 	$scope.avatar = {
 		randomparams : RANDOM.generate()
 	}
+
 	
-	$scope.listGrade = 'Gardien de la Paix, Brigadier, Brigadier Chef, Major'.split(',');
+	$scope.listGrade = 'Gardien de la Paix,Brigadier,Brigadier Chef,Major'.split(',');
 
 	//affichage / masquage des datepickers
 	$scope.open = false;
@@ -317,7 +335,7 @@ PermutantCtrl.controller('ModalUploadCtrl', function($scope, $modalInstance, $ti
 			reader.readAsDataURL(file);
 
 		});
-	}, 1000);
+	});
 
 	$scope.send = function() {
 		var datauri = $("#croped-img").attr('src');

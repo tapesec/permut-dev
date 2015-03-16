@@ -1,3 +1,7 @@
+function debug(val, key) {
+	var cle = key || "";
+	console.log(val, cle);
+}
 //Chargement de la base de données et connexion via le module mongoose
 var mongoose = require('mongoose');
 var config = require('./config.json');
@@ -7,7 +11,7 @@ var db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function callback () {
-	console.log('Connecté à la base de données !');
+	debug('Connecté à la base de données !');
 });
 
 //Modeles
@@ -34,15 +38,27 @@ var path = require('path');
 var multer  = require('multer');
 var mkdirp = require('mkdirp');
 
+var generator = require('xoauth2').createXOAuth2Generator({
+    user: "pere.mutation@gmail.com", // Your gmail address.
+
+    clientId: "335205195184-3n1fmhlr7b4lf1j0ljdjedteimjiiavr.apps.googleusercontent.com",
+    clientSecret: "-UsjpVZ4xTTKl9qgmBelBkCZ",
+    refreshToken: "1/NjIEDPS3FcmJkK8icGIPIvrYylM-NG_zSXKglLkPBfkMEudVrK5jSpoR30zcRFq6"/*,
+    accessToken: "ya29.-wCSAcHAqxMIpgwGdgXE0Ff3Ulhx1SgRJ8RxrvLoABQJ6VBGIVe-TCpBh8OgEq90NtHrtTyHWrlKfQ"*/
+});
+
+generator.on('token', function(token){
+    debug('New token for %s: %s', token.user, token.accessToken);
+});
+
 var transporter = nodemailer.createTransport({
 	service: 'Gmail',
 	tls: {
 		rejectUnauthorized: false
 	},
-	auth: {
-		user: 'lionel.dupouy@gmail.com',
-		pass: 'J1Z8K0G6C1G8N6'
-	}
+    auth: {
+        xoauth2: generator
+    }
 });
 
 //Biblio persos
@@ -96,7 +112,7 @@ function sessionCheck(req, res, next){
 
 //Lancement du serveur
 var server = app.listen(config.port, function(){
-	console.log('c\'est parti !');
+	debug('c\'est parti !');
 });
 
 
@@ -109,25 +125,29 @@ app.get('/', function(req, res){
 
 
 /*app.get('/splitAndSaveVille', function(req, res){
-	var content = fs.readFileSync(__dirname+'/data/france.csv','UTF-8');
+	var content = fs.readFileSync(__dirname+'/data/villes_france.csv','UTF-8');
 	var tmp = content.split('\n'); var tab = []; 
 	var tmp2;
-	console.log(tmp.length);
+	debug(tmp.length);
 	for(var i=0; i<tmp.length; i++){
 		if(tmp[i] !="" && tmp[i] != "\r\n"){
 			tmp2 = tmp[i].split(",");
 			var ville = {};
 			for(j=0; j<tmp2.length;j++){
 				switch(j){
-					case 0:
-					ville.cp = tmp2[j].replace('"', '');
-					ville.cp = ville.cp.replace('"','');
+					case 8:
+					ville.cp = tmp2[j].replace('"', "");
+					ville.cp = ville.cp.replace('"',"");
+					var cp = ville.cp;
+					cp = cp.split("-");
+					ville.cp = cp[0];
 					break;
-					case 6:
-					ville.ville = tmp2[j].replace('"', '');
-					ville.ville = ville.ville.replace('"','');
+					case 5:
+					ville.ville = tmp2[j].replace('"', "");
+					ville.ville = ville.ville.replace('"',"");
+					ville.ville = ville.ville.replace('\\',"");
 					break;
-					case 7:
+					/*case 7:
 					ville.reg = tmp2[j].replace('"', '');
 					ville.reg = ville.reg.replace('"','');
 					break;
@@ -150,14 +170,14 @@ app.get('/', function(req, res){
 					case 12:
 					ville.latitude = tmp2[j].replace('"', '');
 					ville.latitude = ville.latitude.replace('"','');
-					break;	
+					break;
 
 				}
 			}
 			tab.push(ville);
 		}
 	}
-	console.log(tab);
+	debug(tab);
 	for(var i=0;i<tab.length;i++){
 		var ville = new Ville(tab[i]);
 		ville.save(function(error){
@@ -196,7 +216,7 @@ app.post('/login', function(req, res){
 						name: user.name,
 						status: user.status
 					}
-					console.log(user);
+					debug(user);
 					res.status(200).send({ code: 'response:login-success', content: beforeRender(user) });
 				}else{
 					res.status(200).send({ code: 'response:user-not-found' });
@@ -214,10 +234,10 @@ app.get('/logout', [sessionCheck], function(req, res){
 	req.session.destroy(function(error) {
 
 		if(error){
-			console.log('Erreur de destruction de la session de '+login);
+			debug('Erreur de destruction de la session de '+login);
 			res.send({ code: 'error:session-destroy'});
 		}else{
-			console.log('La session de '+login+' a bien été détruite');
+			debug('La session de '+login+' a bien été détruite');
 			res.send({code: 'response:session-destroy'});
 		}
 	});
@@ -227,12 +247,12 @@ app.get('/logout', [sessionCheck], function(req, res){
 * Mise à jour du profil utilisateur
 **/
 app.post('/updateUser', [sessionCheck], function(req, res){
-	console.log(req.body);
+	debug(req.body);
 	if (!isValid(pattern_validator.updateUser, req.body)) {
 		res.status(400).send('Bad Request');
 	} else {
 		var userData = beforeRegister(req.body);
-		console.log(userData);
+		debug(userData);
 		var query = Permutant.findOneAndUpdate({_id: req.session.userAuthenticated._id}, userData);
 		query.exec(function(error, user){
 			var beforeRenderUser = beforeRender(user);
@@ -241,7 +261,7 @@ app.post('/updateUser', [sessionCheck], function(req, res){
 				var message = "error:db-update";
 				res.status(500);
 			}else{
-				console.log('Utilisateur: '+userData.ready+' bien mis à jour !');
+				debug('Utilisateur: '+userData.ready+' bien mis à jour !');
 				var message = "response:update-user-success";
 				res.status(200);
 			}
@@ -260,8 +280,8 @@ app.post('/addUser', function(req, res){
 	} else {
 		var query = Permutant.find();
 		var dataToSave = beforeRegister(req.body);
-		query.where({name: dataToSave.name});
-	  	//query.or([{name: dataToSave.name},{email: dataToSave.email}]);
+		//query.where({name: dataToSave.name});
+	  	query.or([{name: dataToSave.name},{email: dataToSave.email}]);
 	  	query.exec(function(error, users){
 		  	if(error){
 		  		console.error(error, 'Erreur de recherche d\'un utilisateur');
@@ -285,12 +305,12 @@ app.post('/addUser', function(req, res){
 							    subject: '[Permut.com] Confirmation d\'inscription', // Subject line
 							    html: 'Vous recevez cet email car vous souhaitez vous inscrire à Permut.com,<br>'+
 							    'si vous êtes bien l\'auteur de la demande, cliquez sur le lien ci dessous pour valider vore inscription puis rendez vous sur le site pour vous connecter<br>'+
-							    '<a href="http://'+config.domaineUrl+':'+config.port+'/validInscription/'+dataToSave.tokken+'">Je clique ici pour valider mon inscription !</a>' // plaintext body   
+							    '<a href="http://'+config.domaineUrl+'/validInscription/'+dataToSave.tokken+'">Je clique ici pour valider mon inscription !</a>' // plaintext body   
 							};
 							// send mail with defined transport object
 							transporter.sendMail(mailOptions, function(error, info){
 								if(error){
-									console.log(error);
+									debug(error);
 									res.status(500).send({ code:"error:internal"});
 								} else {
 									res.status(200).send({ code: "response:register-success" });
@@ -305,11 +325,11 @@ app.post('/addUser', function(req, res){
 });//end app.post
 
 app.get('/removeUser', [sessionCheck], function(req, res){
-	console.log(req.session.userAuthenticated);
+	debug(req.session.userAuthenticated);
 	var query = Permutant.findOne();
 	query.where({name: req.session.userAuthenticated.name});
 	query.exec(function(err, user) {
-		console.log(user, 'user ligne 312');
+		debug(user, 'user ligne 312');
 		Permutant.remove({name: user.name}, function(err) {
 			if(err){
 			  	console.error(err, 'Erreur de suppression');
@@ -320,11 +340,11 @@ app.get('/removeUser', [sessionCheck], function(req, res){
 					if ( exist ) {
 						fs.unlink(__dirname + user.avatar, function (err) {
 							if(err) {
-								console.log(err);
+								debug(err);
 								res.status(500).send({ code: 'error:db-remove' });
 							}
 							res.status(200).send({ code: 'response:delete-success' });
-							console.log('successfully deleted');
+							debug('successfully deleted');
 						});
 					} else {
 						console.error(err, 'Le chemin n\'existe pas');
@@ -333,7 +353,7 @@ app.get('/removeUser', [sessionCheck], function(req, res){
 				});
 			} else {
 				res.status(200).send({ code: 'response:delete-success' });
-				console.log('successfully deleted');
+				debug('successfully deleted');
 			}
 		});
 	});
@@ -344,7 +364,7 @@ app.get('/removeUser', [sessionCheck], function(req, res){
 * @TODO proteger l'upload
 **/
 app.post('/avatar', [sessionCheck], function(req, res){
-	console.log(req.body.img);
+	debug(req.body.img);
 
 	var imgData = req.body.img,
 	base64Data = imgData.replace(/^data:image\/png;base64,/,""),
@@ -355,7 +375,7 @@ app.post('/avatar', [sessionCheck], function(req, res){
 	
 	mkdirp(__dirname + '/avatars/'+ folder, function(error) {
 		fs.writeFile(__dirname +"/avatars/"+folder+"/"+login/*+rand*/+".png", binaryData, "binary", function(err) {
-	  		console.log(err); // writes out file without error, but it's not a valid image
+	  		debug(err); // writes out file without error, but it's not a valid image
 	  		var query = Permutant.findOneAndUpdate({_id: req.session.userAuthenticated._id}, {avatar: '/avatars/'+folder+'/'+login/*+rand*/+'.png'});
 			query.exec(function(error, user) {
 				if(error) {
@@ -374,12 +394,17 @@ app.get('/validInscription/:tokken', function(req, res){
 
 	var query = Permutant.findOneAndUpdate({tokken: req.params.tokken, checked: false},{checked: true});
 	query.exec(function(error, user){
-		if(error)
+		if(error){
 			res.sendfile(__dirname + '/app/partials/validation-inscription/validation-inscription-error.html');
-		if(user)
+			debug('erreur de validation de l\'inscription'+ req.params.tokken);
+		}
+		if(user){
 			res.sendfile(__dirname + '/app/partials/validation-inscription/validation-inscription-success.html');
-		else
+		}
+		else{
 			res.sendfile(__dirname + '/app/partials/validation-inscription/validation-inscription-error.html');
+			debug('erreur de validation de l\'inscription'+ req.params.tokken);
+		}
 	});
 });
 
@@ -411,9 +436,9 @@ app.post('/retrievePassword', function(req, res){
 					// send mail with defined transport object
 					transporter.sendMail(mailOptions, function(error, info){
 						if(error){
-							console.log(error);
+							debug(error);
 						}else{
-							console.log('Message sent: ' + info.response);
+							debug('Message sent: ' + info.response);
 						}
 					});
 					var message = {code: "response:password-send", content: "Un nouveau mot de passe vous a été envoyé (vérifiez vos spams)" };
@@ -432,7 +457,7 @@ app.post('/retrievePassword', function(req, res){
 * renvoie par mail un nouveau mot de passe à l'utilisateur
 **/
 app.get('/validNewPassword/:tokken', function(req, res){
-		console.log(req.params);
+		debug(req.params);
 		var cryptedPassword = sha1(req.params.tokken.substr(0,8));
 		var query = Permutant.findOneAndUpdate({tokken: req.params.tokken}, {password: cryptedPassword});
 		query.exec(function(error, user){
@@ -452,9 +477,9 @@ app.get('/validNewPassword/:tokken', function(req, res){
 					// send mail with defined transport object
 					transporter.sendMail(mailOptions, function(error, info){
 						if(error){
-							console.log(error);
+							debug(error);
 						}else{
-							console.log('Message sent: ' + info.response);
+							debug('Message sent: ' + info.response);
 						}
 					});
 					res.status(200).send('Un nouveau mot de passe vous a été envoyé à '+user.email+' ,verifiez vos spams');
@@ -538,7 +563,7 @@ app.get('/showBy/:type/:val', [sessionCheck], function(req, res){
 				res.status(500).send({code: message});
 			}else{
 				if(users.length>0){
-					console.log(users, 'villes');
+					debug(users, 'villes');
 					var message = "response:users-found";
 					res.status(200).send({code: message, content: users});
 				}else{
@@ -558,7 +583,7 @@ app.get('/showBy/:type/:val', [sessionCheck], function(req, res){
 * @TODO Discriminer le comptage par corps de métier
 **/
 app.get('/countUser', function(req, res){
-	var query = Permutant.count();
+	var query = Permutant.count({ready: true});
 	query.exec(function(error, nbUser){
 		if(error){
 			var message = "error:db-count";
@@ -583,7 +608,7 @@ app.get('/getVilles/:val', [sessionCheck], function(req, res){
 	} else {
 		var regex = new RegExp('^'+req.params.val);
 		var query = Ville.find();
-		query.where({ville: { $regex: regex, $options: 'i'}}).sort('name').limit(20);
+		query.where({ville: { $regex: regex, $options: 'i'}}).sort('name').limit(100);
 		query.exec(function(error, villes){
 			if(error){
 				console.error(error);
@@ -591,7 +616,7 @@ app.get('/getVilles/:val', [sessionCheck], function(req, res){
 				res.send({code: message});
 			}else{
 				if(villes.length>0){
-					console.log(villes, 'villes');
+					debug(villes, 'villes');
 					var message = "response:villes-found";
 					res.send({code: message, content: villes});
 				}else{
@@ -616,7 +641,7 @@ app.get('/checkCycleAvailable', [sessionCheck], function(req, res){
 			var message = { code: "error:db-update"};
 			res.status(500);
 		if(user){
-			console.log(moment.range(user.lastSearch, new Date()).diff('days'));
+			debug(moment.range(user.lastSearch, new Date()).diff('days'));
 			if(moment.range(user.lastSearch, new Date()).diff('days') >= 1 || !user.lastSearch){
 				var message = {code: "response:ok-run-cycle", content: true};
 			}else{
@@ -674,7 +699,7 @@ var permutantlvl2 = [], permutantlvl3 = [];
 	* ou tous ses utilisateurs souhaitent aller
 	**/
 	function setBipartite(users){
-		console.log(users, 'liste des utilisateurs en poste là ou veux aller le visiteur');
+		debug(users, 'liste des utilisateurs en poste là ou veux aller le visiteur');
 		var deferred = Q.defer();
 		if(!users || users.length == 0) {
 			deferred.resolve(null);
@@ -728,7 +753,7 @@ var permutantlvl2 = [], permutantlvl3 = [];
 	* Récupère la liste des utilisateurs qui sont en poste à un des lieu passés en paramètre
 	**/
 	function secondRound(residencePossibility) {
-		console.log(residencePossibility,'possibilité de recherche d\'utilisateur du second tour');
+		debug(residencePossibility,'possibilité de recherche d\'utilisateur du second tour');
 		var query;
 		var deferred = Q.defer();
 
@@ -748,7 +773,7 @@ var permutantlvl2 = [], permutantlvl3 = [];
 	* ou tous ses utilisateurs souhaitent aller.
 	**/
 	function setTripartite(users) {
-		console.log(users, 'hydrate la liste des utilisateurs qui peuvent permuter avec le visiteur en triipartite et retourne la liste des résidence où tous ses utilisateurs souhaitent aller.');
+		debug(users, 'hydrate la liste des utilisateurs qui peuvent permuter avec le visiteur en triipartite et retourne la liste des résidence où tous ses utilisateurs souhaitent aller.');
 		var deferred = Q.defer();
 		if(!users || users.length == 0) {
 			deferred.resolve(null);
@@ -759,7 +784,7 @@ var permutantlvl2 = [], permutantlvl3 = [];
 					users[user].destination.choix2 == client.residence ||
 					users[user].destination.choix3 == client.residence)
 				{
-					//console.log(users[user].name, 'name setTripartite');
+					//debug(users[user].name, 'name setTripartite');
 					var multiplepos2 = [];
 					for(perm in permutantlvl2){
 
@@ -838,7 +863,7 @@ var permutantlvl2 = [], permutantlvl3 = [];
 	* Récupère la liste des utilisateurs qui sont en poste à un des lieu passés en paramètre
 	**/
 	function thirdRound(residencePossibility) {
-		console.log(residencePossibility, 'thirdround');
+		debug(residencePossibility, 'thirdround');
 		var query;
 		var deferred = Q.defer();
 		if(residencePossibility == null || residencePossibility.length == 0) {
@@ -860,10 +885,10 @@ var permutantlvl2 = [], permutantlvl3 = [];
 	* ou tous ses utilisateurs souhaitent aller.
 	**/
 	function setQuadrapartite(users){
-		console.log(users, 'setQuadrapartite');
-		console.log(client, 'client');
-		console.log(permutantlvl2, 'lvl2'); console.log(permutantlvl3, 'lvl3');
-		console.log(users, 'users');
+		debug(users, 'setQuadrapartite');
+		debug(client, 'client');
+		debug(permutantlvl2, 'lvl2'); debug(permutantlvl3, 'lvl3');
+		debug(users, 'users');
 
 		var deferred = Q.defer();
 		if(!users || users.length == 0) {
@@ -875,22 +900,22 @@ var permutantlvl2 = [], permutantlvl3 = [];
 					users[user].destination.choix2 == client.residence ||
 					users[user].destination.choix3 == client.residence)
 				{
-					//console.log(users, 'match');
+					//debug(users, 'match');
 					var multiplepos3 = [];
 					for(perm in permutantlvl3){
 						if(permutantlvl3[perm].destination.choix1 == users[user].residence ||
 							permutantlvl3[perm].destination.choix2 == users[user].residence ||
 							permutantlvl3[perm].destination.choix3 == users[user].residence)
 						{
-							console.log('OKKKKKKKKKKKKKKKK');
-							//console.log(users, 'multiplepos2');
+							debug('OKKKKKKKKKKKKKKKK');
+							//debug(users, 'multiplepos2');
 							var multiplepos2 = [];
 							for(pperm in permutantlvl2){
 								if(permutantlvl2[pperm].destination.choix1 == permutantlvl3[perm].residence ||
 									permutantlvl2[pperm].destination.choix2 == permutantlvl3[perm].residence ||
 									permutantlvl2[pperm].destination.choix3 == permutantlvl3[perm].residence)
 								{
-									//console.log(users, 'multiplepos1');
+									//debug(users, 'multiplepos1');
 									multiplepos2.push({
 										login : permutantlvl2[pperm].name,
 										residence : permutantlvl2[pperm].residence,
@@ -973,8 +998,8 @@ var permutantlvl2 = [], permutantlvl3 = [];
 	.then(thirdRound)
 	.then(setQuadrapartite)
 	.then(function(users, error){
-			console.log(permutantlvl2, 'lvl2'); console.log(permutantlvl3, 'lvl3');
-			console.log(combinaison, 'combo');
+			debug(permutantlvl2, 'lvl2'); debug(permutantlvl3, 'lvl3');
+			debug(combinaison, 'combo');
 			if(combinaison.bipartite.length == 0 && combinaison.tripartite.length == 0 && combinaison.quadrapartite.length == 0) {
 				res.status(200).send('no match');
 			} else {
@@ -982,6 +1007,6 @@ var permutantlvl2 = [], permutantlvl3 = [];
 			}
 		})
 	.catch(function(err){
-		console.log('in error : ', err);
+		debug('in error : ', err);
 	});
 });

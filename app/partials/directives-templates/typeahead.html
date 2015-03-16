@@ -1,6 +1,18 @@
 <div class="form-group">
 	<label ng-if="label">{{label}}</label>
 	<input class="{{style}}" type="text" name="inputname" placeholder="{{prompt}}" ng-model="item" autocomplete="off">
+	<div style="position:absolute;">
+		<div ng-if="showLoader" id="followingBallsG">
+			<div id="followingBallsG_1" class="followingBallsG">
+			</div>
+			<div id="followingBallsG_2" class="followingBallsG">
+			</div>
+			<div id="followingBallsG_3" class="followingBallsG">
+			</div>
+			<div id="followingBallsG_4" class="followingBallsG">
+			</div>
+		</div>
+	</div>
 	<ul class="list-group typeahead">
 		<li class="list-group-item" ng-click="selected(v)" ng-repeat="v in listeVilles">{{v.ville}} ({{v.cp}})</li>
 	</ul>
